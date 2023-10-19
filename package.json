@@ -9,9 +9,10 @@
   "author": "Spatulox",
   "license": "ISC",
   "dependencies": {
-    "discord.js": "^14.13.0",
-    "myges": "^4.7.1",
-    "node-fetch": "^3.3.2"
+    "discord.js": "^14.12.1",
+    "myges": "^1.14.0",
+    "node-fetch": "^3.3.2",
+    "package-json": "^8.1.1"
   },
   "type": "module"
 }

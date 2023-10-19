@@ -1,0 +1,30 @@
+{
+  "17/10/2023": {
+    "time": "15:45:00",
+    "type": "Cours",
+    "modality": "Présentiel",
+    "name": "Sécurité et Vulnérabilités Informatiques",
+    "teacher": "M. DRIGET"
+  },
+  "18/10/2023": {
+    "time": "17:30:00",
+    "type": "Cours",
+    "modality": "Présentiel",
+    "name": "Gestion de projets",
+    "teacher": "M. TISSOT"
+  },
+  "19/10/2023": {
+    "time": "14:00:00",
+    "type": "Autre",
+    "modality": "",
+    "name": "OPEN ESGI",
+    "teacher": " "
+  },
+  "20/10/2023": {
+    "time": "15:45:00",
+    "type": "Cours",
+    "modality": "Présentiel",
+    "name": "Versioning avec Git et Github",
+    "teacher": "M. ECALLE"
+  }
+}

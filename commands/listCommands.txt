@@ -1,5 +1,5 @@
 In progress :
-- 
+- /rappel (Alexandre)
 
 To do :
 - /help

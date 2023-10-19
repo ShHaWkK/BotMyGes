@@ -23,28 +23,11 @@ const startD = new Date('2023-10-16');
 const endD = new Date('2023-10-21');
 
 
-function writeJsonFile(path, name, array){
-
-	const json = JSON.stringify(array);
-	console.log(json)
-
-	fs.writeFile(`${path}/${name}.json`, json, (err) => {
-	  if (err) {
-	    console.error(err);
-	    return;
-	  }
-	  console.log('Data written to file');
-	});
-
-}
-
-
 const listJsonFile = await gFunct.listJsonFile('./users/')
-console.log(listJsonFile)
 
 if (listJsonFile != ['Error']){
-
-	let agendaBis = {}
+	
+	let agendaToWrite = {}
 
 	for (var k = 0; k < listJsonFile.length; k++) {
 
@@ -65,33 +48,48 @@ if (listJsonFile != ['Error']){
 
 		const agenda = await userFunct.Agenda(user, startD, endD)
 
-		console.log(agenda)
-
 		// Recover things (in object in an array of array)
 		// Never change the "1"	
 		// agenda[i][0] is always the date
 		// agenda[i][1] is always an object named with the time
 		for (var i = 0; i < agenda.length; i++) {
 			console.log('----------------------------------------------------------------------------')
-			console.log(agenda[i][0], Object.keys(agenda[i][1]))
-
-			agendaBis[agenda[i][0]] = Object.keys(agenda[i][1])
+			// agendaToWrite[agenda[i][0]] = Object.keys(agenda[i][1])
+			
+			let tmp
 
 			for (const obj in agenda[i][1]){
 				let type = agenda[i][1][obj].type
 				let modality = agenda[i][1][obj].modality
-				let name = agenda[i][1][obj].name
+				let nameCours = agenda[i][1][obj].name
 				let teacher = agenda[i][1][obj].teacher
-				console.log(obj, type, name, modality, teacher)
+				// console.log(obj, type, name, modality, teacher)
+
+				let tmp2 = {
+					"time":obj,
+					"content":{
+						"time":obj,
+						"type": type,
+						"modality": modality,
+						"name": nameCours,
+						"teacher": teacher
+					}
+				}
+
+				console.log(tmp)
 			}
+
+			agendaToWrite[agenda[i][0]] = {tmp}
+			
 		}
 
 		// writeJsonFile('./users', 'agenda', agenda)
 	}
 
-	console.log(Object.keys(agendaBis))
+	// console.log(agendaToWrite)
+	// console.log(Object.keys(agendaToWrite))
 
-	// const json = JSON.stringify(agendaBis);
+	// const json = JSON.stringify(agendaToWrite, null, 2);
 	// console.log(json)
 
 	// fs.writeFile(`./agenda_output.json`, json, (err) => {
@@ -101,5 +99,6 @@ if (listJsonFile != ['Error']){
 	//   }
 	//   console.log('Data written to file');
 	// });
+
 
 }
