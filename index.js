@@ -44,8 +44,10 @@ if (listJsonFile != ['Error']){
 		// Login the user using userFunct.js
 		const user = await userFunct.login(login, password)
 
-		// Request the agenda and write it in userId_agenda.json
-		const agenda = await userFunct.Agenda(user, startD, endD, userId)
+		if (user != 'Error'){
+			// Request the agenda and write it in userId_agenda.json
+			const agenda = await userFunct.Agenda(user, startD, endD, userId)
+		}
 	}
 
 }
