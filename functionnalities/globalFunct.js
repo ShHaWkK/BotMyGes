@@ -17,37 +17,23 @@ import fs from 'fs'
 // ------------------------------------------------------------------
 
 export function log(str) {
-  
+  // Determinate the path of the globalFunct.js file
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = path.dirname(__filename);
-  
-  const logDir = path.join(__dirname, 'log');
+
+  // Determinate the path of the log folder and file
+  const logDir = path.join(__dirname.split('\\functionnalities')[0], 'log');
   const filePath = path.join(logDir, 'log.txt');
-  
-  if (!fs.existsSync(logDir)) {
+
+  if (fs.existsSync(logDir) == false) {
     fs.mkdirSync(logDir);
   }
-  
-  fs.writeFileSync(filePath, str);
-  
 
+  var today = new Date();
+  let previousStr = `[${today.toLocaleDateString()} - ${today.toLocaleTimeString()}] `
 
-
-  // fs.appendFile(filePath, str + '\n', function (err) {
-  //   if (err) throw err;
-  //   console.log('The string was appended to log.txt');
-  // });
-
-  // fs.writeFile('log.txt', str + '\n', { flag: 'a+' }, function (err) {
-  //   if (err) throw err;
-  //   console.log('The string was appended to log.txt');
-  // });
-
-
-  // fs.appendFile('../log.txt', str + '\n', function (err) {
-  //   if (err) throw err;
-  //   console.log(str);
-  // });
+  console.log(previousStr+str)
+  fs.appendFileSync(filePath, previousStr+str+'\n');
 }
 
 // ------------------------------------------------------------------
