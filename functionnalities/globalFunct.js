@@ -14,6 +14,15 @@ import fs from 'fs'
 
 // ------------------------------------------------------------------
 
+export function log(str) {
+  fs.appendFile('../log.txt', str + '\n', function (err) {
+    if (err) throw err;
+    console.log(str);
+  });
+}
+
+// ------------------------------------------------------------------
+
 export async function listJsonFile(Path) {
   // const directoryPath = '../users/';
 	const relativePath = Path
@@ -56,3 +65,42 @@ export async function writeJsonFile(path, name, array){
 	  console.log('Data written to file');
 	});
 }
+
+// ------------------------------------------------------------------
+
+// Calculate the number of the current week
+Date.prototype.getWeek = function() {
+  var date = new Date(this.getTime());
+  date.setHours(0, 0, 0, 0);
+  date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
+  var week1 = new Date(date.getFullYear(), 0, 4);
+  return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
+};
+
+// ------------------------------------------------------------------
+
+// Calculate the date of the monday of the current week
+Date.prototype.getWeekMonday = function() {
+  var date = new Date(this.getTime());
+  var day = date.getDay();
+  var diff = date.getDate() - day + (day == 0 ? -6 : 1);
+  return new Date(date.setDate(diff)).toLocaleDateString('en-US').split('/').join('-');
+};
+
+// ------------------------------------------------------------------
+
+// Calculate the date of the saturday of the current week
+Date.prototype.getWeekSaturday = function() {
+  var date = new Date(this.getTime());
+  var day = date.getDay();
+  var diff = date.getDate() - day + (day == 0 ? 0 : 6);
+  return new Date(date.setDate(diff)).toLocaleDateString('en-US').split('/').join('-');
+};
+
+
+
+// ------------------------------------------------------------------
+
+
+
+// ------------------------------------------------------------------

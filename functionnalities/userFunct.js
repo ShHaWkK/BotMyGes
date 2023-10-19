@@ -94,7 +94,6 @@ export async function Agenda(user, startD, endD, userId){
 			let modality = agenda[i][1][obj].modality
 			let nameCours = agenda[i][1][obj].name
 			let teacher = agenda[i][1][obj].teacher
-			// console.log(obj, type, name, modality, teacher)
 
 			let tmp = {
 				"time":obj,
@@ -106,21 +105,12 @@ export async function Agenda(user, startD, endD, userId){
 					"teacher": teacher
 				}
 			}
-
-			console.log(tmp)
-
 			cours.push(tmp)
-			// console.log("cours", cours)
 		}
-
 		agendaToWrite[agenda[i][0]] = {cours}
-		console.log("agendaToWrite", agendaToWrite)
-		
 	}
-	console.log("agendaToWrite", agendaToWrite)
 
 	agenda = agendaToWrite
-	// console.log("agenda", agenda)
 
 	await gFunct.writeJsonFile('./users/agenda', `${userId}_agenda`, agenda)
 
