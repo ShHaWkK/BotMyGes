@@ -16,6 +16,7 @@ Simplify the index.js
 // ---------------------------------------------------------------------
 
 import { GesAPI } from '../node_modules/myges/dist/ges-api.js';
+import * as gFunct from './globalFunct.js'
 import myGes from 'myges';
 import fs from 'fs'
 
@@ -24,21 +25,28 @@ import fs from 'fs'
 
 // Return a class with functions => go to see ges-api.js to see functions
 export async function login(username, password){
-	return await GesAPI.login(username, password)
+	try{
+		const tmp = await GesAPI.login(username, password)
+		return tmp
+	}
+	catch{
+		return 'Error'
+	}
 }
 
 // ---------------------------------------------------------------------
 
 // Get the agenda from the api then sort it by date and by time
-export async function Agenda(user, startD, endD){
+// param user is mandatory to call the gesapi functions
+export async function Agenda(user, startD, endD, userId){
 	// Agenda have a lot unsorted objects inside
-	const agenda = await user.getAgenda(startD, endD)
+	let agenda = await user.getAgenda(startD, endD)
 
 
 	// Create an array to store objects by date, then by time
 	let dict = []
+	let addData = 0
 	for (let i = 0; i < agenda.length; i++) {
-
 		// Create readable date and time
 		let date = new Date(agenda[i].start_date).toLocaleDateString();
 		let time = new Date(agenda[i].start_date).toLocaleTimeString();
@@ -46,15 +54,12 @@ export async function Agenda(user, startD, endD){
 		if (!dict.hasOwnProperty(date)) {
 			dict[date] = [];
 		}
-
 		if (!dict[date].hasOwnProperty(time)) {
 			dict[date][time] = agenda[i];
 		}
 		else{
-			dict[date][time]['wtf_un_deuxieme_cours_en_meme_temps_kénié'] = agenda[i];
+			dict[date][time][`anormal_additional_data_${addData}`] = agenda[i];
 		}
-
-
     }
 
     // Sort the dict from the "lowest" date to the "uppest" date
@@ -65,21 +70,62 @@ export async function Agenda(user, startD, endD){
 	  return dateA - dateB;
 	});
 
-    // // Just to console.log() the good data
-	// for (var i = 0; i < agenda.length; i++) {
-	// 	console.log('----------------------------------------------------------------------------')
-	// 	console.log(agenda[i][0], Object.keys(agenda[i][1]))
+	agenda = sortedData
+	console.log("agenda",agenda)
 
-	// 	for (const obj in agenda[i][1]){
-	// 		let type = agenda[i][1][obj].type
-	// 		let modality = agenda[i][1][obj].modality
-	// 		let name = agenda[i][1][obj].name
-	// 		let teacher = agenda[i][1][obj].teacher
-	// 		console.log(obj, type, name, modality, teacher)
+	// Recover things (in object in an array of array)
+	// Never change the "1"	
+	// agenda[i][0] is always the date
+	// agenda[i][1] is always an object named with the time
+	let agendaToWrite = {}
+	for (var i = 0; i < agenda.length; i++) {
+		
+		let cours = []
+
+		// Retrieve infos and store it in variable
+		for (const obj in agenda[i][1]){
+			let type = agenda[i][1][obj].type
+			let modality = agenda[i][1][obj].modality
+			let nameCours = agenda[i][1][obj].name
+			let teacher = agenda[i][1][obj].teacher
+			// console.log(obj, type, name, modality, teacher)
+
+			let tmp = {
+				"time":obj,
+				"content":{
+					"time":obj,
+					"type": type,
+					"modality": modality,
+					"name": nameCours,
+					"teacher": teacher
+				}
+			}
+
+			console.log(tmp)
+
+			cours.push(tmp)
+			// console.log("cours", cours)
+		}
+
+		agendaToWrite[agenda[i][0]] = {cours}
+		console.log("agendaToWrite", agendaToWrite)
+		
+	}
+	console.log("agendaToWrite", agendaToWrite)
+
+	agenda = agendaToWrite
+	// console.log("agenda", agenda)
+
+	await gFunct.writeJsonFile('./users/agenda', `${userId}_agenda`, agenda)
+
+	// //Boucle qui permet de parcourir les datas
+	// // Reach each content in each date
+	// for (let date in agenda) {
+	// 	let cours = agenda[date].cours;
+	// 	for (let i = 0; i < cours.length; i++) {
+	// 		console.log(date, agenda[date].cours[i].time)
 	// 	}
 	// }
-
-	return sortedData
 }
 
 // ---------------------------------------------------------------------

@@ -44,6 +44,15 @@ export function readJsonFile(fileName) {
 
 // ------------------------------------------------------------------
 
-export function writeJsonFile(pathName, array){
+export async function writeJsonFile(path, name, array){
 
+  const json = JSON.stringify(array, null, 2);
+
+  fs.writeFile(`${path}/${name}.json`, json, (err) => {
+	  if (err) {
+	    console.error(err);
+	    return;
+	  }
+	  console.log('Data written to file');
+	});
 }
