@@ -28,7 +28,9 @@ const listJsonFile = await gFunct.listJsonFile('./users/')
 if (listJsonFile != ['Error']){
 	
 	let agendaToWrite = {}
+	console.log(listJsonFile)
 
+	// Use a for to fetch all the users in the users folder
 	for (var k = 0; k < listJsonFile.length; k++) {
 
 		const file = await gFunct.readJsonFile('./users/'+listJsonFile[k])
@@ -37,75 +39,30 @@ if (listJsonFile != ['Error']){
 		const userId = file.userId;
 		// const username = file.username
 		const login = file.login;
-		const password = file.password;
-
-		console.log('--------New user--------')
-		console.log(userId, login)
-		
+		const password = file.password;		
 
 		// Login the user using userFunct.js
+		console.log(`--------Try to login into ${login}--------`)
 		const user = await userFunct.login(login, password)
-
-		const agenda = await userFunct.Agenda(user, startD, endD)
-
-		// Recover things (in object in an array of array)
-		// Never change the "1"	
-		// agenda[i][0] is always the date
-		// agenda[i][1] is always an object named with the time
-		for (var i = 0; i < agenda.length; i++) {
-			console.log('----------------------------------------------------------------------------')
-			// agendaToWrite[agenda[i][0]] = Object.keys(agenda[i][1])
-			
-			let cours = []
-
-			for (const obj in agenda[i][1]){
-				let type = agenda[i][1][obj].type
-				let modality = agenda[i][1][obj].modality
-				let nameCours = agenda[i][1][obj].name
-				let teacher = agenda[i][1][obj].teacher
-				// console.log(obj, type, name, modality, teacher)
-
-				let tmp = {
-					"time":obj,
-					"content":{
-						"time":obj,
-						"type": type,
-						"modality": modality,
-						"name": nameCours,
-						"teacher": teacher
-					}
-				}
-
-				cours.push(tmp)
-			}
-
-			agendaToWrite[agenda[i][0]] = {cours}
-			
+		if (user == 'Error'){
+			console.log(`--------Login error for ${login}--------`)
 		}
+		console.log('--------Login ok--------')
 
-		// writeJsonFile('./users', 'agenda', agenda)
+		// Request the agenda and write it in userId_agenda.json
+		console.log('--------Request Agenda--------')
+		const agenda = await userFunct.Agenda(user, startD, endD, userId)
 	}
 
-	console.log(agendaToWrite)
+	
 
-	// Reach each content in each date
-	for (let date in agendaToWrite) {
-		let cours = agendaToWrite[date].cours;
-		for (let i = 0; i < cours.length; i++) {
-			console.log(date, agendaToWrite[date].cours[i].time)
-		}
-	}
-
-	const json = JSON.stringify(agendaToWrite, null, 2);
-	console.log(json)
-
-	fs.writeFile(`./agenda_output.json`, json, (err) => {
-	  if (err) {
-	    console.error(err);
-	    return;
-	  }
-	  console.log('Data written to file');
-	});
+	// fs.writeFile(`./agenda_output.json`, json, (err) => {
+	//   if (err) {
+	//     console.error(err);
+	//     return;
+	//   }
+	//   console.log('Data written to file');
+	// });
 
 
 }
