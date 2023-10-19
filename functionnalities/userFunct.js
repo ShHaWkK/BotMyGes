@@ -136,3 +136,27 @@ export async function Agenda(user, startD, endD, userId){
 
 // ---------------------------------------------------------------------
 
+async function getRappel(login, password, userId) {
+    const user = await login(login, password); 
+    const today = new Date();
+    const agendaData = await Agenda(user, today, today, userId);
+    
+    if (agendaData && agendaData.length) {
+        let messages = [];
+
+        for (let i = 0; i < agendaData.length; i++) {
+            let entry = agendaData[i];
+            let timeKeys = Object.keys(entry[1]); // Récupère toutes les heures disponibles pour cette date
+            let firstTime = timeKeys[0]; // Prend la première heure
+            let eventName = entry[1][firstTime].name; // Récupère le nom de l'événement pour cette heure
+            messages.push(`- ${firstTime}: ${eventName}`);
+        }
+
+        return messages.join("\n");
+    } else {
+        return "Aucun rappel pour aujourd'hui!";
+    }
+}
+
+// ---------------------------------------------------------------------
+
