@@ -26,10 +26,13 @@ import fs from 'fs'
 // Return a class with functions => go to see ges-api.js to see functions
 export async function login(username, password){
 	try{
+		console.log(`--------Try to login into ${username}--------`)
 		const tmp = await GesAPI.login(username, password)
+		console.log('--------Login ok--------')
 		return tmp
 	}
 	catch{
+		console.log(`--------Login error for ${username}--------`)
 		return 'Error'
 	}
 }
@@ -39,10 +42,12 @@ export async function login(username, password){
 // Get the agenda from the api then sort it by date and by time
 // param user is mandatory to call the gesapi functions
 export async function Agenda(user, startD, endD, userId){
+	console.log('--------Request Agenda--------')
+
 	// Agenda have a lot unsorted objects inside
 	let agenda = await user.getAgenda(startD, endD)
 
-
+	console.log('--------Creating Agenda array--------')
 	// Create an array to store objects by date, then by time
 	let dict = []
 	let addData = 0
@@ -77,6 +82,7 @@ export async function Agenda(user, startD, endD, userId){
 	// Never change the "1"	
 	// agenda[i][0] is always the date
 	// agenda[i][1] is always an object named with the time
+	console.log(`--------Preparing ${userId}_agenda.json--------`)
 	let agendaToWrite = {}
 	for (var i = 0; i < agenda.length; i++) {
 		

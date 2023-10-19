@@ -22,7 +22,7 @@ import fs from 'fs'
 const startD = new Date('2023-10-16');
 const endD = new Date('2023-10-21');
 
-
+// List all the users files
 const listJsonFile = await gFunct.listJsonFile('./users/')
 
 if (listJsonFile != ['Error']){
@@ -42,27 +42,10 @@ if (listJsonFile != ['Error']){
 		const password = file.password;		
 
 		// Login the user using userFunct.js
-		console.log(`--------Try to login into ${login}--------`)
 		const user = await userFunct.login(login, password)
-		if (user == 'Error'){
-			console.log(`--------Login error for ${login}--------`)
-		}
-		console.log('--------Login ok--------')
 
 		// Request the agenda and write it in userId_agenda.json
-		console.log('--------Request Agenda--------')
 		const agenda = await userFunct.Agenda(user, startD, endD, userId)
 	}
-
-	
-
-	// fs.writeFile(`./agenda_output.json`, json, (err) => {
-	//   if (err) {
-	//     console.error(err);
-	//     return;
-	//   }
-	//   console.log('Data written to file');
-	// });
-
 
 }
