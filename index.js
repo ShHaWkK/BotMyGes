@@ -56,7 +56,7 @@ if (listJsonFile != ['Error']){
 			console.log('----------------------------------------------------------------------------')
 			// agendaToWrite[agenda[i][0]] = Object.keys(agenda[i][1])
 			
-			let tmp
+			let cours = []
 
 			for (const obj in agenda[i][1]){
 				let type = agenda[i][1][obj].type
@@ -65,7 +65,7 @@ if (listJsonFile != ['Error']){
 				let teacher = agenda[i][1][obj].teacher
 				// console.log(obj, type, name, modality, teacher)
 
-				let tmp2 = {
+				let tmp = {
 					"time":obj,
 					"content":{
 						"time":obj,
@@ -76,29 +76,36 @@ if (listJsonFile != ['Error']){
 					}
 				}
 
-				console.log(tmp)
+				cours.push(tmp)
 			}
 
-			agendaToWrite[agenda[i][0]] = {tmp}
+			agendaToWrite[agenda[i][0]] = {cours}
 			
 		}
 
 		// writeJsonFile('./users', 'agenda', agenda)
 	}
 
-	// console.log(agendaToWrite)
-	// console.log(Object.keys(agendaToWrite))
+	console.log(agendaToWrite)
 
-	// const json = JSON.stringify(agendaToWrite, null, 2);
-	// console.log(json)
+	// Reach each content in each date
+	for (let date in agendaToWrite) {
+		let cours = agendaToWrite[date].cours;
+		for (let i = 0; i < cours.length; i++) {
+			console.log(date, agendaToWrite[date].cours[i].time)
+		}
+	}
 
-	// fs.writeFile(`./agenda_output.json`, json, (err) => {
-	//   if (err) {
-	//     console.error(err);
-	//     return;
-	//   }
-	//   console.log('Data written to file');
-	// });
+	const json = JSON.stringify(agendaToWrite, null, 2);
+	console.log(json)
+
+	fs.writeFile(`./agenda_output.json`, json, (err) => {
+	  if (err) {
+	    console.error(err);
+	    return;
+	  }
+	  console.log('Data written to file');
+	});
 
 
 }

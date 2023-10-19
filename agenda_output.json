@@ -1,30 +1,138 @@
 {
   "17/10/2023": {
-    "time": "15:45:00",
-    "type": "Cours",
-    "modality": "Présentiel",
-    "name": "Sécurité et Vulnérabilités Informatiques",
-    "teacher": "M. DRIGET"
+    "cours": [
+      {
+        "time": "09:45:00",
+        "content": {
+          "time": "09:45:00",
+          "type": "Cours",
+          "modality": "Présentiel",
+          "name": "Langage C Avancé",
+          "teacher": "M. SANANES"
+        }
+      },
+      {
+        "time": "11:30:00",
+        "content": {
+          "time": "11:30:00",
+          "type": "Cours",
+          "modality": "Présentiel",
+          "name": "Langage C Avancé",
+          "teacher": "M. SANANES"
+        }
+      },
+      {
+        "time": "14:00:00",
+        "content": {
+          "time": "14:00:00",
+          "type": "Cours",
+          "modality": "Présentiel",
+          "name": "Sécurité et Vulnérabilités Informatiques",
+          "teacher": "M. DRIGET"
+        }
+      },
+      {
+        "time": "15:45:00",
+        "content": {
+          "time": "15:45:00",
+          "type": "Cours",
+          "modality": "Présentiel",
+          "name": "Sécurité et Vulnérabilités Informatiques",
+          "teacher": "M. DRIGET"
+        }
+      }
+    ]
   },
   "18/10/2023": {
-    "time": "17:30:00",
-    "type": "Cours",
-    "modality": "Présentiel",
-    "name": "Gestion de projets",
-    "teacher": "M. TISSOT"
+    "cours": [
+      {
+        "time": "14:00:00",
+        "content": {
+          "time": "14:00:00",
+          "type": "Cours",
+          "modality": "Présentiel",
+          "name": "Gestion de projets",
+          "teacher": "M. TISSOT"
+        }
+      },
+      {
+        "time": "15:45:00",
+        "content": {
+          "time": "15:45:00",
+          "type": "Cours",
+          "modality": "Présentiel",
+          "name": "Gestion de projets",
+          "teacher": "M. TISSOT"
+        }
+      },
+      {
+        "time": "17:30:00",
+        "content": {
+          "time": "17:30:00",
+          "type": "Cours",
+          "modality": "Présentiel",
+          "name": "Gestion de projets",
+          "teacher": "M. TISSOT"
+        }
+      }
+    ]
   },
   "19/10/2023": {
-    "time": "14:00:00",
-    "type": "Autre",
-    "modality": "",
-    "name": "OPEN ESGI",
-    "teacher": " "
+    "cours": [
+      {
+        "time": "09:45:00",
+        "content": {
+          "time": "09:45:00",
+          "type": "Cours",
+          "modality": "Présentiel",
+          "name": "Anglais 2  : informatique, expression orale et écrite",
+          "teacher": "M. WEBER"
+        }
+      },
+      {
+        "time": "11:30:00",
+        "content": {
+          "time": "11:30:00",
+          "type": "Cours",
+          "modality": "Présentiel",
+          "name": "Anglais 2  : informatique, expression orale et écrite",
+          "teacher": "M. WEBER"
+        }
+      },
+      {
+        "time": "14:00:00",
+        "content": {
+          "time": "14:00:00",
+          "type": "Autre",
+          "modality": "",
+          "name": "OPEN ESGI",
+          "teacher": " "
+        }
+      }
+    ]
   },
   "20/10/2023": {
-    "time": "15:45:00",
-    "type": "Cours",
-    "modality": "Présentiel",
-    "name": "Versioning avec Git et Github",
-    "teacher": "M. ECALLE"
+    "cours": [
+      {
+        "time": "14:00:00",
+        "content": {
+          "time": "14:00:00",
+          "type": "Cours",
+          "modality": "Présentiel",
+          "name": "Versioning avec Git et Github",
+          "teacher": "M. ECALLE"
+        }
+      },
+      {
+        "time": "15:45:00",
+        "content": {
+          "time": "15:45:00",
+          "type": "Cours",
+          "modality": "Présentiel",
+          "name": "Versioning avec Git et Github",
+          "teacher": "M. ECALLE"
+        }
+      }
+    ]
   }
 }
