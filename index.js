@@ -35,9 +35,7 @@ console.log("Week number:", weekNumber);
 console.log("Monday:", monday, typeof(monday));
 console.log("Saturday:", saturday, typeof(saturday));
 
-const startD = new Date('2023-10-16');
-const endD = new Date('2023-10-21');
-
+log('Creating Client')
 
 function main(){
 	//Créer un "client"
@@ -53,7 +51,8 @@ function main(){
 
 	console.log('Trying to connect to Discord Servers')
 	// Met le bot "En ligne"
-	client.login(config.token);
+	console.log(config)
+	client.login(config.botToken);
 
 	// Evènement qui attent deux chose (nom évènements, fonction associée)
 	client.on('ready', () => {
@@ -105,4 +104,6 @@ async function retrieveMyGesData(){
 	}
 }
 
-await retrieveMyGesData()
+
+
+// main()

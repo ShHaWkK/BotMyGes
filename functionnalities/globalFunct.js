@@ -8,17 +8,46 @@ Just some global function for the program
 ********************************************************************/
 
 // ------------------------------------------------------------------
-
+import { fileURLToPath } from 'url';
 import path from 'path'
 import fs from 'fs'
 
 // ------------------------------------------------------------------
 
+// ------------------------------------------------------------------
+
 export function log(str) {
-  fs.appendFile('../log.txt', str + '\n', function (err) {
-    if (err) throw err;
-    console.log(str);
-  });
+  
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
+  
+  const logDir = path.join(__dirname, 'log');
+  const filePath = path.join(logDir, 'log.txt');
+  
+  if (!fs.existsSync(logDir)) {
+    fs.mkdirSync(logDir);
+  }
+  
+  fs.writeFileSync(filePath, str);
+  
+
+
+
+  // fs.appendFile(filePath, str + '\n', function (err) {
+  //   if (err) throw err;
+  //   console.log('The string was appended to log.txt');
+  // });
+
+  // fs.writeFile('log.txt', str + '\n', { flag: 'a+' }, function (err) {
+  //   if (err) throw err;
+  //   console.log('The string was appended to log.txt');
+  // });
+
+
+  // fs.appendFile('../log.txt', str + '\n', function (err) {
+  //   if (err) throw err;
+  //   console.log(str);
+  // });
 }
 
 // ------------------------------------------------------------------
