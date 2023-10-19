@@ -31,10 +31,6 @@ var weekNumber = today.getWeek();
 var monday = new Date(today.getWeekMonday(weekNumber))
 var saturday = new Date(today.getWeekSaturday(weekNumber))
 
-console.log("Week number:", weekNumber);
-console.log("Monday:", monday, typeof(monday));
-console.log("Saturday:", saturday, typeof(saturday));
-
 log('Creating Client')
 
 function main(){
@@ -49,14 +45,13 @@ function main(){
 		],
 	});
 
-	console.log('Trying to connect to Discord Servers')
+	log('Trying to connect to Discord Servers')
 	// Met le bot "En ligne"
-	console.log(config)
 	client.login(config.botToken);
 
 	// Evènement qui attent deux chose (nom évènements, fonction associée)
 	client.on('ready', () => {
-		console.log(`${client.user.username} has logged in, waiting...`)
+		log(`${client.user.username} has logged in, waiting...`)
 		client.user.setActivity({
 			name:"Seems like I'm in developpement..."
 		})
@@ -68,7 +63,7 @@ function main(){
 			// setInterval(function(), 900000)
 		}
 		catch(error){
-			console.log(error)
+			log(error)
 		}
     })
 }
@@ -77,9 +72,6 @@ function main(){
 async function retrieveMyGesData(){
 
 	if (listJsonFile != ['Error']){
-		
-		let agendaToWrite = {}
-		console.log(listJsonFile)
 
 		// Use a for to fetch all the users in the users folder
 		for (var k = 0; k < listJsonFile.length; k++) {
