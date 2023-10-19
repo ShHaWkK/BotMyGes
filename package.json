@@ -1,0 +1,17 @@
+{
+  "name": "botmyges",
+  "version": "1.0.0",
+  "description": "Bot qui récupère des trucs de myges",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Spatulox",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^14.13.0",
+    "myges": "^4.7.1",
+    "node-fetch": "^3.3.2"
+  },
+  "type": "module"
+}

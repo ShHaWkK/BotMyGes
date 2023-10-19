@@ -1,0 +1,5 @@
+In progress
+- retrieve agenda
+
+To do
+- retrieve absences

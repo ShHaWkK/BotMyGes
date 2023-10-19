@@ -1,0 +1,85 @@
+Agenda : 
+(4 trucs)
+[
+  [
+    '17/10/2023',
+    [
+      '09:45:00': [Object],
+      '11:30:00': [Object],
+      '14:00:00': [Object],
+      '15:45:00': [Object]
+    ]
+  ],
+  [
+    '18/10/2023',
+    [
+      '14:00:00': [Object],
+      '15:45:00': [Object],
+      '17:30:00': [Object]
+    ]
+  ],
+  [
+    '19/10/2023',
+    [
+      '09:45:00': [Object],
+      '11:30:00': [Object],
+      '14:00:00': [Object]
+    ]
+  ],
+  [ '20/10/2023', 
+    [
+    '14:00:00': [Object],
+    '15:45:00': [Object]
+    ]
+  ]
+]
+
+
+Agenda[i]
+(2 trucs)
+
+[
+  '20/10/2023',
+  [
+    '14:00:00': {
+      reservation_id: 1278072,
+      rooms: [Array],
+      type: 'Cours',
+      modality: 'Présentiel',
+      author: 2951,
+      create_date: null,
+      start_date: 1697803200000,
+      end_date: 1697808600000,
+      state: 'PUBLISHED',
+      comment: null,
+      classes: null,
+      name: 'Versioning avec Git et Github',
+      discipline: [Object],
+      teacher: 'M. ECALLE',
+      promotion: '',
+      prestation_type: 2,
+      is_electronic_signature: false,
+      links: []
+    },
+    '15:45:00': {
+      reservation_id: 1278073,
+      rooms: [Array],
+      type: 'Cours',
+      modality: 'Présentiel',
+      author: 2951,
+      create_date: null,
+      start_date: 1697809500000,
+      end_date: 1697814900000,
+      state: 'PUBLISHED',
+      comment: null,
+      classes: null,
+      name: 'Versioning avec Git et Github',
+      discipline: [Object],
+      teacher: 'M. ECALLE',
+      promotion: '',
+      prestation_type: 2,
+      is_electronic_signature: false,
+      links: []
+    }
+  ]
+]
