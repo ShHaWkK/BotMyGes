@@ -47,7 +47,8 @@ export async function listJsonFile(Path) {
     const jsonFiles = files.filter(file => path.extname(file) === '.json');
     return jsonFiles;
   } catch (err) {
-    console.error('Error reading directory:', err);
+    // console.error('Error reading directory:', err);
+    log(`ERROR : Reading directory ${relativePath}, ${err}`)
     return ['Error'];
   }
 }
@@ -61,7 +62,8 @@ export function readJsonFile(fileName) {
     const data = fs.readFileSync(fileName, 'utf8');
     return JSON.parse(data);
   } catch (error) {
-    console.error('Erreur de lecture du fichier JSON:', error);
+    // console.error('Erreur de lecture du fichier JSON:', error);
+    log(`ERROR : Reading Json file ${filename}, ${error}`)
     return ['Error'];
   }
 }
@@ -75,9 +77,11 @@ export async function writeJsonFile(path, name, array){
   fs.writeFile(`${path}/${name}.json`, json, (err) => {
 	  if (err) {
 	    console.error(err);
+      log(`Error while writing file ${err}`)
 	    return;
 	  }
-	  console.log('Data written to file');
+	  // console.log('Data written to file');
+    log(`Data written to ${name}.json`)
 	});
 }
 
@@ -111,8 +115,6 @@ Date.prototype.getWeekSaturday = function() {
   var diff = date.getDate() - day + (day == 0 ? 0 : 6);
   return new Date(date.setDate(diff)).toLocaleDateString('en-US').split('/').join('-');
 };
-
-
 
 // ------------------------------------------------------------------
 

@@ -60,7 +60,7 @@ function main(){
 
 		try{
 			
-			// setInterval(function(), 900000)
+			// setInterval(retrieveMyGesData(), 900000)
 		}
 		catch(error){
 			log(error)
