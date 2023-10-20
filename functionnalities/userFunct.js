@@ -16,6 +16,7 @@ Simplify the index.js
 // ---------------------------------------------------------------------
 
 import { GesAPI } from '../node_modules/myges/dist/ges-api.js';
+import { log } from './globalFunct.js'
 import * as gFunct from './globalFunct.js'
 import myGes from 'myges';
 import fs from 'fs'
@@ -26,13 +27,13 @@ import fs from 'fs'
 // Return a class with functions => go to see ges-api.js to see functions
 export async function login(username, password){
 	try{
-		console.log(`--------Try to login into ${username}--------`)
+		log(`--------Try to login into ${username} myGes--------`)
 		const tmp = await GesAPI.login(username, password)
-		console.log('--------Login ok--------')
+		log('--------Login myGes ok--------')
 		return tmp
 	}
 	catch{
-		console.log(`--------Login error for ${username}--------`)
+		log(`--------Login myGes error for ${username}--------`)
 		return 'Error'
 	}
 }
@@ -42,12 +43,12 @@ export async function login(username, password){
 // Get the agenda from the api then sort it by date and by time
 // param user is mandatory to call the gesapi functions
 export async function Agenda(user, startD, endD, userId){
-	console.log('--------Request Agenda--------')
+	log('--------Request myGes Agenda--------')
 
 	// Agenda have a lot unsorted objects inside
 	let agenda = await user.getAgenda(startD, endD)
 
-	console.log('--------Creating Agenda array--------')
+	log('--------Creating Agenda array--------')
 	// Create an array to store objects by date, then by time
 	let dict = []
 	let addData = 0
@@ -76,13 +77,12 @@ export async function Agenda(user, startD, endD, userId){
 	});
 
 	agenda = sortedData
-	console.log("agenda",agenda)
 
 	// Recover things (in object in an array of array)
 	// Never change the "1"	
 	// agenda[i][0] is always the date
 	// agenda[i][1] is always an object named with the time
-	console.log(`--------Preparing ${userId}_agenda.json--------`)
+	log(`--------Preparing ${userId}_agenda.json--------`)
 	let agendaToWrite = {}
 	for (var i = 0; i < agenda.length; i++) {
 		
@@ -94,7 +94,6 @@ export async function Agenda(user, startD, endD, userId){
 			let modality = agenda[i][1][obj].modality
 			let nameCours = agenda[i][1][obj].name
 			let teacher = agenda[i][1][obj].teacher
-			// console.log(obj, type, name, modality, teacher)
 
 			let tmp = {
 				"time":obj,
@@ -106,21 +105,12 @@ export async function Agenda(user, startD, endD, userId){
 					"teacher": teacher
 				}
 			}
-
-			console.log(tmp)
-
 			cours.push(tmp)
-			// console.log("cours", cours)
 		}
-
 		agendaToWrite[agenda[i][0]] = {cours}
-		console.log("agendaToWrite", agendaToWrite)
-		
 	}
-	console.log("agendaToWrite", agendaToWrite)
 
 	agenda = agendaToWrite
-	// console.log("agenda", agenda)
 
 	await gFunct.writeJsonFile('./users/agenda', `${userId}_agenda`, agenda)
 
