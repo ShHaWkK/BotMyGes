@@ -31,10 +31,8 @@ var weekNumber = today.getWeek();
 var monday = new Date(today.getWeekMonday(weekNumber))
 var saturday = new Date(today.getWeekSaturday(weekNumber))
 
-log('Creating Client')
-
 function main(){
-	//Créer un "client"
+	//Creating a client
 	log('Creating Client')
 	const client = new Client({ intents: [
 		GatewayIntentBits.Guilds,
@@ -46,10 +44,9 @@ function main(){
 	});
 
 	log('Trying to connect to Discord Servers')
-	// Met le bot "En ligne"
+	// Bot go online
 	client.login(config.botToken);
 
-	// Evènement qui attent deux chose (nom évènements, fonction associée)
 	client.on('ready', () => {
 		log(`${client.user.username} has logged in, waiting...`)
 		client.user.setActivity({
