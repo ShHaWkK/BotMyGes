@@ -12,7 +12,7 @@ main file for the moment
 
 ***********************************************************************/
 import { Client, GatewayIntentBits, ActivityType, Events } from 'discord.js';
-import config from './users/556461959042564098.json' assert { type: 'json' };
+import config from './config.json' assert { type: 'json' };
 import * as userFunct from './functionnalities/userFunct.js'
 import * as gFunct from './functionnalities/globalFunct.js'
 import { log } from './functionnalities/globalFunct.js'
@@ -38,6 +38,7 @@ function main(){
 		GatewayIntentBits.Guilds,
 		GatewayIntentBits.GuildMessages,
 		GatewayIntentBits.MessageContent,
+		GatewayIntentBits.DirectMessages,
 		GatewayIntentBits.GuildMessageReactions,
 		GatewayIntentBits.DirectMessageReactions,
 		],
@@ -58,6 +59,7 @@ function main(){
 		try{
 			
 			// setInterval(retrieveMyGesData(), 900000)
+			retrieveMyGesData(client)
 		}
 		catch(error){
 			log(error)
@@ -66,7 +68,7 @@ function main(){
 }
 
 
-async function retrieveMyGesData(){
+async function retrieveMyGesData(client){
 
 	if (listJsonFile != ['Error']){
 
@@ -84,9 +86,16 @@ async function retrieveMyGesData(){
 			// Login the user using userFunct.js
 			const user = await userFunct.login(login, password)
 
-			if (user != 'Error'){
+			if (user == 'Error'){
 				// Request the agenda and write it in userId_agenda.json
 				const agenda = await userFunct.Agenda(user, monday, saturday, userId)
+			}
+			else{
+				log(`Error when trying to fetch agenda for ${login}`)
+				let targetChannel = client.channels.cache.get(config.errorChannel)
+				targetChannel.send(`Error when trying to fetch ${login} schedule...`)
+				// let targetUser = await client.users.fetch(userId);
+				// targetUser.send('Error when trying to fetch your schedule');
 			}
 		}
 
@@ -95,4 +104,4 @@ async function retrieveMyGesData(){
 
 
 
-// main()
+main()
