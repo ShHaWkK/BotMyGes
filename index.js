@@ -21,11 +21,7 @@ import fs from 'fs'
 
 
 
-
-// List all the users files
-const listJsonFile = await gFunct.listJsonFile('./users/infos/')
-
-
+// Create the current date
 var today = new Date();
 var weekNumber = today.getWeek();
 var monday = new Date(today.getWeekMonday(weekNumber))
@@ -58,9 +54,8 @@ function main(){
 		client.user.setStatus('dnd');
 
 		try{
-			
 			// setInterval(retrieveMyGesData(), 900000)
-			 retrieveMyGesData(client)
+			retrieveMyGesData(client)
 		}
 		catch(error){
 			log(error)
@@ -70,10 +65,15 @@ function main(){
 
 
 async function retrieveMyGesData(client){
+	log('Retrieve myges data..')
 	const discordClient = client
-	let errorChannel = discordClient.channels.cache.get(config.errorChannel)
+	const errorChannel = discordClient.channels.cache.get(config.errorChannel)
+	const scheduleChannel = discordClient.channels.cache.get(config.scheduleChannelId)
 
-	if (listJsonFile != ['Error']){
+	// update the number of users if another user has been registered
+	let listJsonFile = await gFunct.listJsonFile('./users/infos/');
+
+	if (listJsonFile != 'Error'){
 
 		// Use a for to fetch all the users in the users folder
 		for (var k = 0; k < listJsonFile.length; k++) {
@@ -90,22 +90,22 @@ async function retrieveMyGesData(client){
 			const user = await userFunct.login(login, password)
 
 			if (user != 'Error'){
-				try{
+				// try{
 					// Request the agenda and write it in userId_agenda.json
 					const agenda = await userFunct.Agenda(user, monday, saturday, userId)
 					// print agenda if changed...
 					await userFunct.printAgenda(client, agenda, file)
-				}
-				catch (error){
-					log(`Error when trying to fetch the schedule for ${login}, ${error}`)
+				// }
+				// catch (error){
+					// log(`Error when trying to fetch the schedule for ${login}, ${error}`)
 					errorChannel.send(`Error when trying to fetch the schedule for ${login}`)
-				}
+				// }
 
 				try{
 					// Retrieve grades
 					const grades = await userFunct.Grades(user, userId, today)
 					// Print grades
-					// userFunct.printGrades(client, grades, file)
+					userFunct.printGrades(client, grades, file)
 				}
 				catch (error){
 					log(`Error when trying to retrieve grades for ${login}, ${error}`)
@@ -114,7 +114,7 @@ async function retrieveMyGesData(client){
 
 				try{
 					// Retrieve absences
-					// const absences = await userFunct.Absences(user, userId)
+					const absences = await userFunct.Absences(user, userId, today)
 					// Print absences
 					// userFunct.printAbsences(client, absences, file)
 				}
@@ -133,6 +133,9 @@ async function retrieveMyGesData(client){
 
 		}
 
+	}
+	else{
+		log(`No users registered, please type "/register mygesLogin mygesPassword" to begin the check`)
 	}
 }
 

@@ -34,8 +34,8 @@ export async function login(username, password){
 		log('Login myGes ok')
 		return tmp
 	}
-	catch{
-		log(`Login myGes error for ${username}`)
+	catch (error){
+		log(`ERROR : Login myGes error for ${username}, ${error}`)
 		return 'Error'
 	}
 }
@@ -115,7 +115,6 @@ export async function Agenda(user, startD, endD, userId){
 
 	agenda = agendaToWrite
 
-	// await gFunct.writeJsonFile('./users/agenda', `${userId}_agenda`, agenda)
 	return agenda
 
 }
@@ -123,74 +122,94 @@ export async function Agenda(user, startD, endD, userId){
 // ---------------------------------------------------------------------
 
 export async function printAgenda(client, currentAgenda, file){
-
-	const previousAgenda = await readJsonFile(`./users/agenda/${file.userId}_agenda.json`)
-	// Utilisez les données du fichier JSON ici
-
-	log(`Compare new to old agenda for ${file.userId}, ${file.username}`)
-
+	
 	let scheduleChannel = client.channels.cache.get(config.scheduleChannelId)
+	let errorChannel = client.channels.cache.get(config.errorChannel)
 
-	//Checking date
-	
-	//Boucle qui permet de parcourir les datas
-	// Reach each content in each dates
-	for (let date in currentAgenda) {
-		// Checking dates in each agenda
-		// If a day exist in the previousAgenda and in the currentAgenda
-		if (previousAgenda[date]){
+	// Try to read the json file
+	const previousAgenda = await readJsonFile(`./users/agenda/${file.userId}_agenda.json`)
 
-			let cours = currentAgenda[date].cours;
-			for (let i = 0; i < cours.length; i++) {
-				console.log(date, currentAgenda[date].cours[i].time)
-				let sentence_ok = 'False'
-				let sentence
-				let name = previousAgenda[date].cours[i].content.name
-				let time = previousAgenda[date].cours[i].content.time
-				let type = previousAgenda[date].cours[i].content.type
-				let modality = previousAgenda[date].cours[i].content.modality
-				let teacher = previousAgenda[date].cours[i].content.teacher
+	if (previousAgenda != 'Error'){
 
-				if (currentAgenda[date].cours[i].content.name != previousAgenda[date].cours[i].content.name){
-					sentence = `# /!\\ Un cours a changé le ${date} !\n> - ${currentAgenda[date].cours[i].time}\n> - ~~${name}~~ => ${currentAgenda[date].cours[i].content.name}\n> - ${currentAgenda[date].cours[i].content.type}\n> - ${currentAgenda[date].cours[i].content.modality}\n> - ${currentAgenda[date].cours[i].content.teacher}`
-					scheduleChannel.send(sentence)
-					break
+		// try{
+
+			log(`Comparing new to old agenda for ${file.userId}, ${file.username}`)
+
+			//Checking date
+			
+			//Boucle qui permet de parcourir les datas
+			// Reach each content in each dates
+			for (let date in currentAgenda) {
+				// Checking dates in each agenda
+
+				// If a day exist in the previousAgenda and in the currentAgenda
+				if (previousAgenda[date]){
+
+					let cours = currentAgenda[date].cours;
+					for (let i = 0; i < cours.length; i++) {
+						console.log(date, currentAgenda[date].cours[i].time)
+						let sentence_ok = 'False'
+						let sentence
+						let name = previousAgenda[date].cours[i].content.name
+						let time = previousAgenda[date].cours[i].content.time
+						let type = previousAgenda[date].cours[i].content.type
+						let modality = previousAgenda[date].cours[i].content.modality
+						let teacher = previousAgenda[date].cours[i].content.teacher
+
+						if (currentAgenda[date].cours[i].content.name != previousAgenda[date].cours[i].content.name){
+							sentence = `# /!\\ Un cours a changé le ${date} !\n> - ${currentAgenda[date].cours[i].time}\n> - ~~${name}~~ => ${currentAgenda[date].cours[i].content.name}\n> - ${currentAgenda[date].cours[i].content.type}\n> - ${currentAgenda[date].cours[i].content.modality}\n> - ${currentAgenda[date].cours[i].content.teacher}`
+							scheduleChannel.send(sentence)
+							break
+						}
+
+						if (currentAgenda[date].cours[i].content.time != previousAgenda[date].cours[i].content.time){
+							time = `~~${time}~~ => ${currentAgenda[date].cours[i].content.time}`
+							sentence_ok = 'True'
+						}
+
+						if (currentAgenda[date].cours[i].content.type != previousAgenda[date].cours[i].content.type){
+							type = `~~${type}~~ => ${currentAgenda[date].cours[i].content.type}`
+							sentence_ok = 'True'
+						}
+			
+						if (currentAgenda[date].cours[i].content.modality != previousAgenda[date].cours[i].content.modality){
+							modality = `~~${modality}~~ => ${currentAgenda[date].cours[i].content.modality}`
+							sentence_ok = 'True'
+						}
+			
+						if (currentAgenda[date].cours[i].content.teacher != previousAgenda[date].cours[i].content.teacher){
+							teacher = `~~${teacher}~~ => ${currentAgenda[date].cours[i].content.teacher}`
+							sentence_ok = 'True'
+						}
+
+						if (sentence_ok == 'True'){
+							sentence = `# Modification d'un cours le ${date} pour <@${file.userId}> !\n> - ${time}\n> - ${name}\n> - ${type}\n> - ${modality}\n> - ${teacher}`
+							scheduleChannel.send(sentence)
+						}		
+
+					}
 				}
-
-				if (currentAgenda[date].cours[i].content.time != previousAgenda[date].cours[i].content.time){
-					time = `~~${time}~~ => ${currentAgenda[date].cours[i].content.time}`
-					sentence_ok = 'True'
+				else{
+					// If a lesson has been added
+					scheduleChannel.send(`Un cours a été rajouté le **${date}**`)
 				}
-
-				if (currentAgenda[date].cours[i].content.type != previousAgenda[date].cours[i].content.type){
-					type = `~~${type}~~ => ${currentAgenda[date].cours[i].content.type}`
-					sentence_ok = 'True'
-				}
-	
-				if (currentAgenda[date].cours[i].content.modality != previousAgenda[date].cours[i].content.modality){
-					modality = `~~${modality}~~ => ${currentAgenda[date].cours[i].content.modality}`
-					sentence_ok = 'True'
-				}
-	
-				if (currentAgenda[date].cours[i].content.teacher != previousAgenda[date].cours[i].content.teacher){
-					teacher = `~~${teacher}~~ => ${currentAgenda[date].cours[i].content.teacher}`
-					sentence_ok = 'True'
-				}
-
-				if (sentence_ok == 'True'){
-					sentence = `# Modification d'un cours le ${date} pour <@${file.userId}> !\n> - ${time}\n> - ${name}\n> - ${type}\n> - ${modality}\n> - ${teacher}`
-					scheduleChannel.send(sentence)
-				}		
-
 			}
-		}
-		else{
-			scheduleChannel.send(`Vous avez cours le **${date}**`)
-		}
+			// Overwrite the file with the new schedule
+			await gFunct.writeJsonFile('./users/agenda', `${file.userId}_agenda`, currentAgenda)
+		// }
+		// catch (error){
+		// 	log(`ERROR : Impossible to compare new and old schedule for ${file.username}, ${error}`)
+		// 	errorChannel.send(`Impossible to compare new and old schedule for ${file.username}`)
+		// }
+	}
+	else{
+		log(`Impossible to read ${file.userId}_agenda.json file , it probably doesn't exit, creating it..`)
+		errorChannel.send(`Impossible to read ${file.userId}_agenda.json file , it probably doesn't exit, creating it..`)
+		await gFunct.writeJsonFile('./users/agenda', `${file.userId}_agenda`, currentAgenda)
 	}
 }
 
-// ---------------------------GRADES-----------------------------------
+// ---------------------------GRADES------------------------------------
 
 export async function Grades(user, userId, date){
 	
@@ -205,7 +224,32 @@ export async function Grades(user, userId, date){
 // ---------------------------------------------------------------------
 
 export async function printGrades(client, grades, file){
-	console.log('No grades right now')
+	log('No grades right now')
+}
+
+// ---------------------------ABSENCES----------------------------------
+
+export async function Absences(user, userId, date){
+	log('Checking absences')
+
+	const year = date.getFullYear();
+
+	let absences = await user.getAbsences(year)
+
+	let absenceToWrite = {}
+
+	for (let i = 0; i < absences.length; i++) {
+		console.log(absences[i].course_name);
+		
+	}
+	console.log(absences)
+	return absences
+}
+
+// ---------------------------------------------------------------------
+
+export async function printAbsences(user, userId, date){
+	log('No absences right now')
 }
 
 // ---------------------------------------------------------------------

@@ -49,7 +49,7 @@ export async function listJsonFile(Path) {
   } catch (err) {
     // console.error('Error reading directory:', err);
     log(`ERROR : Reading directory ${relativePath}, ${err}`)
-    return ['Error'];
+    return 'Error';
   }
 }
 
@@ -63,25 +63,35 @@ export async function readJsonFile(fileName) {
     return JSON.parse(data);
   } catch (error) {
     // console.error('Erreur de lecture du fichier JSON:', error);
-    log(`ERROR : Reading Json file ${filename}, ${error}`)
-    return ['Error'];
+    log(`ERROR : Reading Json file ${fileName}, ${error}`)
+    return 'Error';
   }
 }
 
 // ------------------------------------------------------------------
 
-export async function writeJsonFile(path, name, array){
+export async function writeJsonFile(directoryPath, name, array){
 
-  const json = JSON.stringify(array, null, 2);
+  const directories = directoryPath.split(path.sep);
+  let currentPath = '';
+  const json = JSON.stringify(array, null, 2)
 
-  fs.writeFile(`${path}/${name}.json`, json, (err) => {
+  directories.forEach((directory) => {
+    currentPath = path.join(currentPath, directory);
+    if (!fs.existsSync(currentPath)) {
+      fs.mkdirSync(currentPath);
+    }
+  });
+
+
+  fs.writeFile(`${directoryPath}/${name}.json`, json, (err) => {
 	  if (err) {
 	    console.error(err);
-      log(`Error while writing file ${err}`)
+      log(`ERROR : error while writing file ${directoryPath}/${name}.json, ${err}`)
 	    return;
 	  }
 	  // console.log('Data written to file');
-    log(`Data written to ${name}.json`)
+    log(`Data written to ${directoryPath}/${name}.json`)
 	});
 }
 
