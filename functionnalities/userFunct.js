@@ -17,9 +17,11 @@ Simplify the index.js
 
 import { GesAPI } from '../node_modules/myges/dist/ges-api.js';
 import { log, readJsonFile } from './globalFunct.js'
+import config from '../config.json' assert { type: 'json' }
 import * as gFunct from './globalFunct.js'
 import myGes from 'myges';
 import fs from 'fs'
+import { assert } from 'console';
 
 
 // ---------------------------------------------------------------------
@@ -120,37 +122,30 @@ export async function Agenda(user, startD, endD, userId){
 
 // ---------------------------------------------------------------------
 
-export async function printAgenda(user, agenda, file){
+export async function printAgenda(client, currentAgenda, file){
 
-	// import previousAgenda from `./users/agenda/${file.userId}.json`
-	// let previousAgenda = require(`./users/agenda/${file.userId}.json`)
-	// const response = await fetch(`../users/agenda/${file.userId}_agenda.json`);
-  	// const previousAgenda = await response.json();
-	
-	// const data = fs.readFileSync(`./users/agenda/${file.userId}_agenda.json`, 'utf8');
-	// const previousAgenda = JSON.parse(data);
-
-	// const previousAgenda = await readJsonFile(`./users/agenda/${file.userId}_agenda.json`)
+	const previousAgenda = await readJsonFile(`./users/agenda/${file.userId}_agenda.json`)
 	// Utilisez les données du fichier JSON ici
-	console.log(typeof(`./users/agenda/${file.userId}_agenda.json`))
-	// console.log(previousAgenda)
 
-	// log(`Print agenda for ${file.userId}`)
+	log(`Checking agenda for ${file.userId}, ${file.username}`)
 
-	let targetChannel = client.channels.cache.get(config.scheduleChannelId)
-	targetChannel.send(`Coucou lé zamis`)
-
-
-	// console.log(agenda)
+	let scheduleChannel = client.channels.cache.get(config.scheduleChannelId)
 
 	//Checking date
 	
 	//Boucle qui permet de parcourir les datas
 	// Reach each content in each date
-	for (let date in agenda) {
-		let cours = agenda[date].cours;
-		for (let i = 0; i < cours.length; i++) {
-			console.log(date, agenda[date].cours[i].time)
+	for (let date in currentAgenda) {
+		// Checking dates in each agenda
+		if (previousAgenda[date]){
+
+			let cours = currentAgenda[date].cours;
+			for (let i = 0; i < cours.length; i++) {
+				console.log(date, currentAgenda[date].cours[i].time)
+			}
+		}
+		else{
+			scheduleChannel.send(`Vous avez cours le **${date}**`)
 		}
 	}
 }

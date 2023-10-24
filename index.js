@@ -69,6 +69,7 @@ function main(){
 
 
 async function retrieveMyGesData(client){
+	const discordClient = client
 
 	if (listJsonFile != ['Error']){
 
@@ -90,7 +91,7 @@ async function retrieveMyGesData(client){
 				// Request the agenda and write it in userId_agenda.json
 				const agenda = await userFunct.Agenda(user, monday, saturday, userId)
 				// print agenda if changed...
-				await userFunct.printAgenda(user, agenda, file)
+				await userFunct.printAgenda(client, agenda, file)
 
 				//retrive grades
 				// const agenda = await userFunct.Agenda(user, userId)
@@ -105,7 +106,7 @@ async function retrieveMyGesData(client){
 			}
 			else{
 				log(`Error when trying to fetch agenda for ${login}`)
-				let targetChannel = client.channels.cache.get(config.errorChannel)
+				let targetChannel = discordClient.channels.cache.get(config.errorChannel)
 				targetChannel.send(`Error when trying to fetch ${login} schedule...`)
 				// let targetUser = await client.users.fetch(userId);
 				// targetUser.send('Error when trying to fetch your schedule');
