@@ -57,8 +57,6 @@ export async function listJsonFile(Path) {
 
 export async function readJsonFile(fileName) {
   try {
-    // const directoryPath = './ytbChannels/';
-    // const data = fs.readFileSync(directoryPath + fileName, 'utf8');
     const data = fs.readFileSync(fileName, 'utf8');
     return JSON.parse(data);
   } catch (error) {

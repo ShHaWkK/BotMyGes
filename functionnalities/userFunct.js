@@ -23,6 +23,8 @@ import myGes from 'myges';
 import fs from 'fs'
 import { assert } from 'console';
 
+import test from '../coucou_absences.json' assert { type: 'json' }
+
 
 // ---------------------------------------------------------------------
 
@@ -131,7 +133,7 @@ export async function printAgenda(client, currentAgenda, file){
 
 	if (previousAgenda != 'Error'){
 
-		// try{
+		try{
 
 			log(`Comparing new to old agenda for ${file.userId}, ${file.username}`)
 
@@ -147,7 +149,7 @@ export async function printAgenda(client, currentAgenda, file){
 
 					let cours = currentAgenda[date].cours;
 					for (let i = 0; i < cours.length; i++) {
-						console.log(date, currentAgenda[date].cours[i].time)
+						// console.log(date, currentAgenda[date].cours[i].time)
 						let sentence_ok = 'False'
 						let sentence
 						let name = previousAgenda[date].cours[i].content.name
@@ -196,11 +198,11 @@ export async function printAgenda(client, currentAgenda, file){
 			}
 			// Overwrite the file with the new schedule
 			await gFunct.writeJsonFile('./users/agenda', `${file.userId}_agenda`, currentAgenda)
-		// }
-		// catch (error){
-		// 	log(`ERROR : Impossible to compare new and old schedule for ${file.username}, ${error}`)
-		// 	errorChannel.send(`Impossible to compare new and old schedule for ${file.username}`)
-		// }
+		}
+		catch (error){
+			log(`ERROR : Impossible to compare new and old schedule for ${file.username}, ${error}`)
+			errorChannel.send(`Impossible to compare new and old schedule for ${file.username}`)
+		}
 	}
 	else{
 		log(`Impossible to read ${file.userId}_agenda.json file , it probably doesn't exit, creating it..`)
@@ -230,26 +232,124 @@ export async function printGrades(client, grades, file){
 // ---------------------------ABSENCES----------------------------------
 
 export async function Absences(user, userId, date){
+	
 	log('Checking absences')
 
 	const year = date.getFullYear();
 
 	let absences = await user.getAbsences(year)
 
-	let absenceToWrite = {}
+	log('Creating absences array')
+	
+	if (absences){
+		// Store usefull datas in an array
+		let cours = []
+		// Only take few information from the promise
+		for (let i = 0; i < absences.length; i++) {
+			var dateAbsence = new Date(absences[i].date).toLocaleDateString();
+			var timeAbsence = new Date(absences[i].date).toLocaleTimeString();
 
-	for (let i = 0; i < absences.length; i++) {
-		console.log(absences[i].course_name);
+			var tmp = {
+				"date": dateAbsence,
+				"hour": timeAbsence,
+				"course_name": absences[i].course_name,
+				"justified": absences[i].justified,
+				"semester": absences[i].trimester_name
+			}		
+			cours.push(tmp)
+		}
+
+		// Sort the array by date then by hours (not me lol)
+		const result = cours.reduce((acc, cur) => {
+			const { date, hour, ...rest } = cur;
+			if (!acc[date]) {
+			  acc[date] = {};
+			}
+			acc[date][hour] = rest;
+			return acc;
+		  }, {});
 		
+		// Sorts hours in ascending order for each day (not me too lol)
+		for (const date in result) {
+			const sorted = Object.entries(result[date]).sort((a, b) => a[0].localeCompare(b[0]));
+			result[date] = Object.fromEntries(sorted);
+		}
+
+		absences = result
+
 	}
-	console.log(absences)
+	else{
+		absences = 'Error'
+	}
 	return absences
+
 }
 
 // ---------------------------------------------------------------------
 
-export async function printAbsences(user, userId, date){
-	log('No absences right now')
+export async function printAbsences(client, absences, file){
+
+	log('Compare old absences with current absences')
+
+	let scheduleChannel = client.channels.cache.get(config.scheduleChannelId)
+	let errorChannel = client.channels.cache.get(config.errorChannel)
+	let userMessageChannel = await client.users.fetch(file.userId)
+
+	// ReadFile
+	const old_absences = await readJsonFile(`./users/absences/${file.userId}_absences.json`)
+
+	// Compare current datas with already stored datas
+	if (old_absences != 'Error' && absences != 'Error') {
+		for (let date in absences){
+			console.log(absences[date])
+		}
+
+		log('Send private message 1')
+		scheduleChannel.send(`You have...`)
+		// userMessageChannel.send('PV message')
+		
+	}
+	// If the file don't exist
+	else if(old_absences == 'Error' && absences !='Error')
+	{
+		// Inform the user the number of absence if have one or more
+		console.log(absences)
+
+		let sentence = ''
+		let nbHour = 0
+		for (var date in absences) {
+			const hours = Object.keys(absences[date]);
+			console.log(absences[date])
+			nbHour += hours.length
+
+			for (var nbHours in absences[date]){
+				console.log(absences[date][nbHours])
+				sentence += `> - You missed **__${absences[date][nbHours].course_name}__** on ${date} at ${nbHours}\n`
+			}
+		}
+
+		log('Send private message 2')
+		scheduleChannel.send(`You have **${nbHour}** new absences\n${sentence}`)
+		// userMessageChannel.send(`You have **${nbHour}** new absences\n${sentence}`)
+	}
+	else{
+		log(`ERROR : Error when retrieve absences for ${file.username}`)
+		errorChannel.send(`Error when retrieve absences for ${file.username}`)
+		userMessageChannel.send('Error when retrieve your absences')
+	}
+
+	if (absences != 'Error'){
+		// Then create a file with absences
+		log('Writing absences file')
+		await gFunct.writeJsonFile('./users/absences', `${file.userId}_absences`, absences)
+	}
+	else{
+		log(`No absences datas for ${file.username}`)
+	}
+
+
+	
+
 }
 
 // ---------------------------------------------------------------------

@@ -90,16 +90,16 @@ async function retrieveMyGesData(client){
 			const user = await userFunct.login(login, password)
 
 			if (user != 'Error'){
-				// try{
+				try{
 					// Request the agenda and write it in userId_agenda.json
 					const agenda = await userFunct.Agenda(user, monday, saturday, userId)
 					// print agenda if changed...
 					await userFunct.printAgenda(client, agenda, file)
-				// }
-				// catch (error){
+				}
+				catch (error){
 					// log(`Error when trying to fetch the schedule for ${login}, ${error}`)
 					errorChannel.send(`Error when trying to fetch the schedule for ${login}`)
-				// }
+				}
 
 				try{
 					// Retrieve grades
@@ -112,16 +112,16 @@ async function retrieveMyGesData(client){
 					errorChannel.send(`Error when trying to retrieve grades for ${login}`)
 				}				
 
-				try{
+				// try{
 					// Retrieve absences
 					const absences = await userFunct.Absences(user, userId, today)
 					// Print absences
-					// userFunct.printAbsences(client, absences, file)
-				}
-				catch (error){
-					log(`Error when trying to retrieve new absence for ${login}, ${error}`)
-					errorChannel.send(`Error when trying to retrieve new absence for ${login}`)
-				}
+					userFunct.printAbsences(client, absences, file)
+				// }
+				// catch (error){
+					// log(`Error when trying to retrieve new absences for ${login}, ${error}`)
+					// errorChannel.send(`Error when trying to retrieve new absence for ${login}`)
+				// }
 
 			}
 			else{
