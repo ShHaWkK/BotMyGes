@@ -157,22 +157,22 @@ export async function printAgenda(client, currentAgenda, file){
 					break
 				}
 
-				if (currentAgenda[date].cours[i].content.time == previousAgenda[date].cours[i].content.time){
+				if (currentAgenda[date].cours[i].content.time != previousAgenda[date].cours[i].content.time){
 					time = `~~${time}~~ => ${currentAgenda[date].cours[i].content.time}`
 					sentence_ok = 'True'
 				}
 
-				if (currentAgenda[date].cours[i].content.type == previousAgenda[date].cours[i].content.type){
+				if (currentAgenda[date].cours[i].content.type != previousAgenda[date].cours[i].content.type){
 					type = `~~${type}~~ => ${currentAgenda[date].cours[i].content.type}`
 					sentence_ok = 'True'
 				}
 	
-				if (currentAgenda[date].cours[i].content.modality == previousAgenda[date].cours[i].content.modality){
+				if (currentAgenda[date].cours[i].content.modality != previousAgenda[date].cours[i].content.modality){
 					modality = `~~${modality}~~ => ${currentAgenda[date].cours[i].content.modality}`
 					sentence_ok = 'True'
 				}
 	
-				if (currentAgenda[date].cours[i].content.teacher == previousAgenda[date].cours[i].content.teacher){
+				if (currentAgenda[date].cours[i].content.teacher != previousAgenda[date].cours[i].content.teacher){
 					teacher = `~~${teacher}~~ => ${currentAgenda[date].cours[i].content.teacher}`
 					sentence_ok = 'True'
 				}

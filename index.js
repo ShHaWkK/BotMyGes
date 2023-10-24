@@ -31,6 +31,7 @@ var weekNumber = today.getWeek();
 var monday = new Date(today.getWeekMonday(weekNumber))
 var saturday = new Date(today.getWeekSaturday(weekNumber))
 
+
 function main(){
 	//Creating a client
 	log('Creating Client')
@@ -59,7 +60,7 @@ function main(){
 		try{
 			
 			// setInterval(retrieveMyGesData(), 900000)
-			retrieveMyGesData(client)
+			 retrieveMyGesData(client)
 		}
 		catch(error){
 			log(error)
@@ -70,6 +71,7 @@ function main(){
 
 async function retrieveMyGesData(client){
 	const discordClient = client
+	let targetChannel = discordClient.channels.cache.get(config.errorChannel)
 
 	if (listJsonFile != ['Error']){
 
@@ -88,12 +90,18 @@ async function retrieveMyGesData(client){
 			const user = await userFunct.login(login, password)
 
 			if (user != 'Error'){
-				// Request the agenda and write it in userId_agenda.json
-				const agenda = await userFunct.Agenda(user, monday, saturday, userId)
-				// print agenda if changed...
-				await userFunct.printAgenda(client, agenda, file)
+				try{
+					// Request the agenda and write it in userId_agenda.json
+					const agenda = await userFunct.Agenda(user, monday, saturday, userId)
+					// print agenda if changed...
+					await userFunct.printAgenda(client, agenda, file)
+				}
+				catch{
+					log(`Error when trying to connect to ${login} myges account`)
+					targetChannel.send(`Error when trying to fetch the schedule for ${login}`)
+				}
 
-				//retrive grades
+				//retrieve grades
 				// const agenda = await userFunct.Agenda(user, userId)
 				//print grades
 				// const agenda = userFunct.printAgenda(user, userId)				
@@ -105,9 +113,8 @@ async function retrieveMyGesData(client){
 
 			}
 			else{
-				log(`Error when trying to fetch agenda for ${login}`)
-				let targetChannel = discordClient.channels.cache.get(config.errorChannel)
-				targetChannel.send(`Error when trying to fetch ${login} schedule...`)
+				log(`Error when trying to connect to ${login} myges account`)
+				targetChannel.send(`Error when trying to connect to ${login} myges account`)
 				// let targetUser = await client.users.fetch(userId);
 				// targetUser.send('Error when trying to fetch your schedule');
 			}
