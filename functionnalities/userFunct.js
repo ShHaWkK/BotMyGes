@@ -134,14 +134,54 @@ export async function printAgenda(client, currentAgenda, file){
 	//Checking date
 	
 	//Boucle qui permet de parcourir les datas
-	// Reach each content in each date
+	// Reach each content in each dates
 	for (let date in currentAgenda) {
 		// Checking dates in each agenda
+		// If a day exist in the previousAgenda and in the currentAgenda
 		if (previousAgenda[date]){
 
 			let cours = currentAgenda[date].cours;
 			for (let i = 0; i < cours.length; i++) {
 				console.log(date, currentAgenda[date].cours[i].time)
+				let sentence_ok = 'False'
+				let sentence
+				let name = previousAgenda[date].cours[i].content.name
+				let time = previousAgenda[date].cours[i].content.time
+				let type = previousAgenda[date].cours[i].content.type
+				let modality = previousAgenda[date].cours[i].content.modality
+				let teacher = previousAgenda[date].cours[i].content.teacher
+
+				if (currentAgenda[date].cours[i].content.name != previousAgenda[date].cours[i].content.name){
+					sentence = `# /!\\ Un cours a changé le ${date} !\n> - ${currentAgenda[date].cours[i].time}\n> - ~~${name}~~ => ${currentAgenda[date].cours[i].content.name}\n> - ${currentAgenda[date].cours[i].content.type}\n> - ${currentAgenda[date].cours[i].content.modality}\n> - ${currentAgenda[date].cours[i].content.teacher}`
+					scheduleChannel.send(sentence)
+					break
+				}
+
+				if (currentAgenda[date].cours[i].content.time == previousAgenda[date].cours[i].content.time){
+					time = `~~${time}~~ => ${currentAgenda[date].cours[i].content.time}`
+					sentence_ok = 'True'
+				}
+
+				if (currentAgenda[date].cours[i].content.type == previousAgenda[date].cours[i].content.type){
+					type = `~~${type}~~ => ${currentAgenda[date].cours[i].content.type}`
+					sentence_ok = 'True'
+				}
+	
+				if (currentAgenda[date].cours[i].content.modality == previousAgenda[date].cours[i].content.modality){
+					modality = `~~${modality}~~ => ${currentAgenda[date].cours[i].content.modality}`
+					sentence_ok = 'True'
+				}
+	
+				if (currentAgenda[date].cours[i].content.teacher == previousAgenda[date].cours[i].content.teacher){
+					teacher = `~~${teacher}~~ => ${currentAgenda[date].cours[i].content.teacher}`
+					sentence_ok = 'True'
+				}
+
+				if (sentence_ok == 'True'){
+					sentence = `# Modification d'un cours le ${date} pour <@${file.userId}> !\n> - ${time}\n> - ${name}\n> - ${type}\n> - ${modality}\n> - ${teacher}`
+					scheduleChannel.send(sentence)
+				}		
+
 			}
 		}
 		else{
