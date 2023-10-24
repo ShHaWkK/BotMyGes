@@ -86,9 +86,22 @@ async function retrieveMyGesData(client){
 			// Login the user using userFunct.js
 			const user = await userFunct.login(login, password)
 
-			if (user == 'Error'){
+			if (user != 'Error'){
 				// Request the agenda and write it in userId_agenda.json
 				const agenda = await userFunct.Agenda(user, monday, saturday, userId)
+				// print agenda if changed...
+				await userFunct.printAgenda(user, agenda, file)
+
+				//retrive grades
+				// const agenda = await userFunct.Agenda(user, userId)
+				//print grades
+				// const agenda = userFunct.printAgenda(user, userId)				
+
+				//retrieve absences
+				// const agenda = await userFunct.Agenda(user, userId)
+				//print absences
+				// const agenda = userFunct.printAgenda(user, userId)
+
 			}
 			else{
 				log(`Error when trying to fetch agenda for ${login}`)

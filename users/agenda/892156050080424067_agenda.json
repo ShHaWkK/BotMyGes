@@ -1,5 +1,5 @@
 {
-  "17/10/2023": {
+  "24/10/2023": {
     "cours": [
       {
         "time": "09:45:00",
@@ -7,8 +7,8 @@
           "time": "09:45:00",
           "type": "Cours",
           "modality": "Présentiel",
-          "name": "Langage C Avancé",
-          "teacher": "M. SANANES"
+          "name": "Architecture et programmation assembleur",
+          "teacher": "M. NEVEU"
         }
       },
       {
@@ -17,42 +17,62 @@
           "time": "11:30:00",
           "type": "Cours",
           "modality": "Présentiel",
+          "name": "Architecture et programmation assembleur",
+          "teacher": "M. NEVEU"
+        }
+      },
+      {
+        "time": "14:00:00",
+        "content": {
+          "time": "14:00:00",
+          "type": "Cours",
+          "modality": "Présentiel",
           "name": "Langage C Avancé",
           "teacher": "M. SANANES"
         }
       },
       {
-        "time": "14:00:00",
-        "content": {
-          "time": "14:00:00",
-          "type": "Cours",
-          "modality": "Présentiel",
-          "name": "Sécurité et Vulnérabilités Informatiques",
-          "teacher": "M. DRIGET"
-        }
-      },
-      {
         "time": "15:45:00",
         "content": {
           "time": "15:45:00",
           "type": "Cours",
           "modality": "Présentiel",
-          "name": "Sécurité et Vulnérabilités Informatiques",
-          "teacher": "M. DRIGET"
+          "name": "Langage C Avancé",
+          "teacher": "M. SANANES"
         }
       }
     ]
   },
-  "18/10/2023": {
+  "25/10/2023": {
     "cours": [
       {
+        "time": "09:45:00",
+        "content": {
+          "time": "09:45:00",
+          "type": "Cours",
+          "modality": "Présentiel",
+          "name": "Mathématiques pour le traitement de données",
+          "teacher": "M. BIANCHINI"
+        }
+      },
+      {
+        "time": "11:30:00",
+        "content": {
+          "time": "11:30:00",
+          "type": "Cours",
+          "modality": "Présentiel",
+          "name": "Mathématiques pour le traitement de données",
+          "teacher": "M. BIANCHINI"
+        }
+      },
+      {
         "time": "14:00:00",
         "content": {
           "time": "14:00:00",
           "type": "Cours",
           "modality": "Présentiel",
-          "name": "Gestion de projets",
-          "teacher": "M. TISSOT"
+          "name": "Virtualisation de réseaux (gns3, nsx)",
+          "teacher": "M. OUAKI"
         }
       },
       {
@@ -61,23 +81,13 @@
           "time": "15:45:00",
           "type": "Cours",
           "modality": "Présentiel",
-          "name": "Gestion de projets",
-          "teacher": "M. TISSOT"
-        }
-      },
-      {
-        "time": "17:30:00",
-        "content": {
-          "time": "17:30:00",
-          "type": "Cours",
-          "modality": "Présentiel",
-          "name": "Gestion de projets",
-          "teacher": "M. TISSOT"
+          "name": "Virtualisation de réseaux (gns3, nsx)",
+          "teacher": "M. OUAKI"
         }
       }
     ]
   },
-  "19/10/2023": {
+  "26/10/2023": {
     "cours": [
       {
         "time": "14:00:00",
@@ -88,30 +98,10 @@
           "name": "OPEN ESGI",
           "teacher": " "
         }
-      },
-      {
-        "time": "09:45:00",
-        "content": {
-          "time": "09:45:00",
-          "type": "Cours",
-          "modality": "Présentiel",
-          "name": "Anglais 1 : informatique, expression orale et écrite",
-          "teacher": "Mme DELESTRE"
-        }
-      },
-      {
-        "time": "11:30:00",
-        "content": {
-          "time": "11:30:00",
-          "type": "Cours",
-          "modality": "Présentiel",
-          "name": "Anglais 1 : informatique, expression orale et écrite",
-          "teacher": "Mme DELESTRE"
-        }
       }
     ]
   },
-  "20/10/2023": {
+  "27/10/2023": {
     "cours": [
       {
         "time": "14:00:00",
@@ -119,8 +109,8 @@
           "time": "14:00:00",
           "type": "Cours",
           "modality": "Présentiel",
-          "name": "Versioning avec Git et Github",
-          "teacher": "M. ECALLE"
+          "name": "Développement web et api",
+          "teacher": "M. FIRROLONI"
         }
       },
       {
@@ -129,8 +119,28 @@
           "time": "15:45:00",
           "type": "Cours",
           "modality": "Présentiel",
-          "name": "Versioning avec Git et Github",
-          "teacher": "M. ECALLE"
+          "name": "Développement web et api",
+          "teacher": "M. FIRROLONI"
+        }
+      },
+      {
+        "time": "09:45:00",
+        "content": {
+          "time": "09:45:00",
+          "type": "Cours",
+          "modality": "Présentiel",
+          "name": "Introduction au data mining en python",
+          "teacher": "Mme BALASOUPRAMANIANE"
+        }
+      },
+      {
+        "time": "11:30:00",
+        "content": {
+          "time": "11:30:00",
+          "type": "Cours",
+          "modality": "Présentiel",
+          "name": "Introduction au data mining en python",
+          "teacher": "Mme BALASOUPRAMANIANE"
         }
       }
     ]
