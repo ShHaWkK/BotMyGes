@@ -16,7 +16,7 @@ Simplify the index.js
 // ---------------------------------------------------------------------
 
 import { GesAPI } from '../node_modules/myges/dist/ges-api.js';
-import { log } from './globalFunct.js'
+import { log, readJsonFile } from './globalFunct.js'
 import * as gFunct from './globalFunct.js'
 import myGes from 'myges';
 import fs from 'fs'
@@ -65,6 +65,7 @@ export async function Agenda(user, startD, endD, userId){
 		}
 		else{
 			dict[date][time][`anormal_additional_data_${addData}`] = agenda[i];
+			addData++
 		}
     }
 
@@ -126,13 +127,18 @@ export async function printAgenda(user, agenda, file){
 	// const response = await fetch(`../users/agenda/${file.userId}_agenda.json`);
   	// const previousAgenda = await response.json();
 	
-	const data = fs.readFileSync(`./users/agenda/${file.userId}_agenda.json`, 'utf8');
-	const previousAgenda = JSON.parse(data);
+	// const data = fs.readFileSync(`./users/agenda/${file.userId}_agenda.json`, 'utf8');
+	// const previousAgenda = JSON.parse(data);
+
+	// const previousAgenda = await readJsonFile(`./users/agenda/${file.userId}_agenda.json`)
 	// Utilisez les données du fichier JSON ici
+	console.log(typeof(`./users/agenda/${file.userId}_agenda.json`))
+	// console.log(previousAgenda)
 
-	console.log(previousAgenda)
+	// log(`Print agenda for ${file.userId}`)
 
-	log(`Print agenda for ${file.userId}`)
+	let targetChannel = client.channels.cache.get(config.scheduleChannelId)
+	targetChannel.send(`Coucou lé zamis`)
 
 
 	// console.log(agenda)
