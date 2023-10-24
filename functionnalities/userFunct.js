@@ -40,7 +40,7 @@ export async function login(username, password){
 	}
 }
 
-// ---------------------------------------------------------------------
+// -------------------------AGENDA-------------------------------
 
 // Get the agenda from the api then sort it by date and by time
 // param user is mandatory to call the gesapi functions
@@ -127,7 +127,7 @@ export async function printAgenda(client, currentAgenda, file){
 	const previousAgenda = await readJsonFile(`./users/agenda/${file.userId}_agenda.json`)
 	// Utilisez les données du fichier JSON ici
 
-	log(`Checking agenda for ${file.userId}, ${file.username}`)
+	log(`Compare new to old agenda for ${file.userId}, ${file.username}`)
 
 	let scheduleChannel = client.channels.cache.get(config.scheduleChannelId)
 
@@ -188,6 +188,24 @@ export async function printAgenda(client, currentAgenda, file){
 			scheduleChannel.send(`Vous avez cours le **${date}**`)
 		}
 	}
+}
+
+// ---------------------------GRADES-----------------------------------
+
+export async function Grades(user, userId, date){
+	
+	log('Checking grades')
+
+	const year = date.getFullYear();
+
+	let grades = await user.getGrades(year)
+	return grades
+}
+
+// ---------------------------------------------------------------------
+
+export async function printGrades(client, grades, file){
+	console.log('No grades right now')
 }
 
 // ---------------------------------------------------------------------

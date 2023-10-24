@@ -23,7 +23,7 @@ import fs from 'fs'
 
 
 // List all the users files
-const listJsonFile = await gFunct.listJsonFile('./users/')
+const listJsonFile = await gFunct.listJsonFile('./users/infos/')
 
 
 var today = new Date();
@@ -71,14 +71,14 @@ function main(){
 
 async function retrieveMyGesData(client){
 	const discordClient = client
-	let targetChannel = discordClient.channels.cache.get(config.errorChannel)
+	let errorChannel = discordClient.channels.cache.get(config.errorChannel)
 
 	if (listJsonFile != ['Error']){
 
 		// Use a for to fetch all the users in the users folder
 		for (var k = 0; k < listJsonFile.length; k++) {
 
-			const file = await gFunct.readJsonFile('./users/'+listJsonFile[k])
+			const file = await gFunct.readJsonFile('./users/infos/'+listJsonFile[k])
 
 			// Variable to connect the bot to the myGes user account
 			const userId = file.userId;
@@ -96,28 +96,41 @@ async function retrieveMyGesData(client){
 					// print agenda if changed...
 					await userFunct.printAgenda(client, agenda, file)
 				}
-				catch{
-					log(`Error when trying to connect to ${login} myges account`)
-					targetChannel.send(`Error when trying to fetch the schedule for ${login}`)
+				catch (error){
+					log(`Error when trying to fetch the schedule for ${login}, ${error}`)
+					errorChannel.send(`Error when trying to fetch the schedule for ${login}`)
 				}
 
-				//retrieve grades
-				// const agenda = await userFunct.Agenda(user, userId)
-				//print grades
-				// const agenda = userFunct.printAgenda(user, userId)				
+				try{
+					// Retrieve grades
+					const grades = await userFunct.Grades(user, userId, today)
+					// Print grades
+					// userFunct.printGrades(client, grades, file)
+				}
+				catch (error){
+					log(`Error when trying to retrieve grades for ${login}, ${error}`)
+					errorChannel.send(`Error when trying to retrieve grades for ${login}`)
+				}				
 
-				//retrieve absences
-				// const agenda = await userFunct.Agenda(user, userId)
-				//print absences
-				// const agenda = userFunct.printAgenda(user, userId)
+				try{
+					// Retrieve absences
+					// const absences = await userFunct.Absences(user, userId)
+					// Print absences
+					// userFunct.printAbsences(client, absences, file)
+				}
+				catch (error){
+					log(`Error when trying to retrieve new absence for ${login}, ${error}`)
+					errorChannel.send(`Error when trying to retrieve new absence for ${login}`)
+				}
 
 			}
 			else{
 				log(`Error when trying to connect to ${login} myges account`)
-				targetChannel.send(`Error when trying to connect to ${login} myges account`)
+				errorChannel.send(`Error when trying to connect to ${login} myges account`)
 				// let targetUser = await client.users.fetch(userId);
 				// targetUser.send('Error when trying to fetch your schedule');
 			}
+
 		}
 
 	}
