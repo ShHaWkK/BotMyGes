@@ -201,7 +201,7 @@ export async function printAgenda(client, currentAgenda, file){
 
 	if (previousAgenda != 'Error' && currentAgenda !='Error'){
 
-		// try{
+		try{
 
 			log(`Comparing new to old agenda for ${file.userId}, ${file.username}`)
 
@@ -239,39 +239,40 @@ export async function printAgenda(client, currentAgenda, file){
 								let teacher = previousAgenda[date].cours[i].content.teacher
 
 								if (currentAgenda[date].cours[i].content.name != previousAgenda[date].cours[i].content.name){
-									sentence = `# /!\\ Un cours a changé le ${date} !\n> - ${currentAgenda[date].cours[i].time}\n> - ~~${name}~~ => ${currentAgenda[date].cours[i].content.name}\n> - ${currentAgenda[date].cours[i].content.type}\n> - ${currentAgenda[date].cours[i].content.modality}\n> - ${currentAgenda[date].cours[i].content.teacher}`
+									sentence = `# /!\\ A lesson change on ${date} !\n<@&${file.groupToPing}>\n> - ~~${time}~~ => ${currentAgenda[date].cours[i].time}\n> - ~~${name}~~ => ${currentAgenda[date].cours[i].content.name}\n> - ~~${type}~~ => ${currentAgenda[date].cours[i].content.type}\n> - ~~${modality}~~ => ${currentAgenda[date].cours[i].content.modality}\n> - ~~${teacher}~~ => ${currentAgenda[date].cours[i].content.teacher}`
 									scheduleChannel.send(sentence)
-									break
 								}
+								else{
 
-								if (currentAgenda[date].cours[i].content.time != previousAgenda[date].cours[i].content.time){
-									time = `~~${time}~~ => ${currentAgenda[date].cours[i].content.time}`
-									sentence_ok = 'True'
-									console.log(currentAgenda[date].cours[i].content.time)
-									console.log(previousAgenda[date].cours[i].content.time)
-									console.log('----------')
-								}
+									if (currentAgenda[date].cours[i].content.time != previousAgenda[date].cours[i].content.time){
+										time = `~~${time}~~ => ${currentAgenda[date].cours[i].content.time}`
+										sentence_ok = 'True'
+										console.log(currentAgenda[date].cours[i].content.time)
+										console.log(previousAgenda[date].cours[i].content.time)
+										console.log('----------')
+									}
 
-								if (currentAgenda[date].cours[i].content.type != previousAgenda[date].cours[i].content.type){
-									type = `~~${type}~~ => ${currentAgenda[date].cours[i].content.type}`
-									sentence_ok = 'True'
-								}
-					
-								if (currentAgenda[date].cours[i].content.modality != previousAgenda[date].cours[i].content.modality){
-									modality = `~~${modality}~~ => ${currentAgenda[date].cours[i].content.modality}`
-									sentence_ok = 'True'
-								}
-					
-								if (currentAgenda[date].cours[i].content.teacher != previousAgenda[date].cours[i].content.teacher){
-									teacher = `~~${teacher}~~ => ${currentAgenda[date].cours[i].content.teacher}`
-									sentence_ok = 'True'
-								}
+									if (currentAgenda[date].cours[i].content.type != previousAgenda[date].cours[i].content.type){
+										type = `~~${type}~~ => ${currentAgenda[date].cours[i].content.type}`
+										sentence_ok = 'True'
+									}
+						
+									if (currentAgenda[date].cours[i].content.modality != previousAgenda[date].cours[i].content.modality){
+										modality = `~~${modality}~~ => ${currentAgenda[date].cours[i].content.modality}`
+										sentence_ok = 'True'
+									}
+						
+									if (currentAgenda[date].cours[i].content.teacher != previousAgenda[date].cours[i].content.teacher){
+										teacher = `~~${teacher}~~ => ${currentAgenda[date].cours[i].content.teacher}`
+										sentence_ok = 'True'
+									}
 
-								if (sentence_ok == 'True'){
-									sentence = `# Lesson updated on ${date}\n<@${file.userId}>\n> - ${time}\n> - ${name}\n> - ${type}\n> - ${modality}\n> - ${teacher}`
-									scheduleChannel.send(sentence)
-									sentence_ok = 'False'
-									sentence_ok_2 = 'True'
+									if (sentence_ok == 'True'){
+										sentence = `# Lesson updated on ${date}\n<@&${file.groupToPing}>\n> - ${time}\n> - ${name}\n> - ${type}\n> - ${modality}\n> - ${teacher}`
+										scheduleChannel.send(sentence)
+										sentence_ok = 'False'
+										sentence_ok_2 = 'True'
+									}
 								}
 							}
 							catch{
@@ -284,7 +285,7 @@ export async function printAgenda(client, currentAgenda, file){
 									let modality = currentAgenda[date].cours[i].content.modality
 									let teacher = currentAgenda[date].cours[i].content.teacher
 
-									scheduleChannel.send(`# Shedule changed ! New lesson added on **${date}**\nYou have a new lesson on **${date}** at **${time}**\n> - Day : ${date}\n> - Time : ${time}\n> - ${type} : ${name}\n> - Modality : ${modality}\n> - Teacher : ${teacher}`)
+									scheduleChannel.send(`# Shedule changed ! New lesson added on **${date}**\n<@&${file.groupToPing}>\nYou have a new lesson on **${date}** at **${time}**\n> - Day : ${date}\n> - Time : ${time}\n> - ${type} : ${name}\n> - Modality : ${modality}\n> - Teacher : ${teacher}`)
 								}
 							}
 						}
@@ -298,13 +299,12 @@ export async function printAgenda(client, currentAgenda, file){
 						// console.log(previousAgenda[date].cours[i])
 
 						if (JSON.stringify(currentAgenda[date].cours[i]) !== JSON.stringify(previousAgenda[date].cours[i])){
-							console.log('WARNING '+previousAgenda[date].cours[i].content.name+' a été supprimé')
 							let name = previousAgenda[date].cours[i].content.name
 							let time = previousAgenda[date].cours[i].content.time
 							let type = previousAgenda[date].cours[i].content.type
 							let modality = previousAgenda[date].cours[i].content.modality
 							let teacher = previousAgenda[date].cours[i].content.teacher
-							scheduleChannel.send(`# Shedule changed ! Lesson deleted **${date}**\nThe lesson **${name}** have been deleted on **${date}** at **${time}**\n> - Day : ${date}\n> - Time : ${time}\n> - ${type} : ${name}\n> - Modality : ${modality}\n> - Teacher : ${teacher}`)
+							scheduleChannel.send(`# Shedule changed ! Lesson deleted **${date}**\n<@&${file.groupToPing}>\nThe lesson **${name}** have been deleted on **${date}** at **${time}**\n> - Day : ${date}\n> - Time : ${time}\n> - ${type} : ${name}\n> - Modality : ${modality}\n> - Teacher : ${teacher}`)
 						}
 
 					}
@@ -350,20 +350,15 @@ export async function printAgenda(client, currentAgenda, file){
 					}
 				}
 
-				scheduleChannel.send(`# A day with lesson(s) ${additionalInfos} on **${realDate}**\n${sentence}`)
+				scheduleChannel.send(`# A day with lesson(s) ${additionalInfos} on **${realDate}**\n<@&${file.groupToPing}>\n${sentence}`)
 
 			}
-			else{
-				
-			}
-			// else if (Object.entries(previousAgenda).length < Object.entries(currentAgenda).length){
-			// 	console.log('Vous avez cours une journée en plus')
-			// }
-		// }
-		// catch (error){
-			// log(`ERRO	R : Impossible to compare new and old schedule for ${file.username}, ${error}`)
-			// errorChannel.send(`Impossible to compare new and old schedule for ${file.username}`)
-		// }
+
+		}
+		catch (error){
+			log(`ERRO	R : Impossible to compare new and old schedule for ${file.username}, ${error}`)
+			errorChannel.send(`Impossible to compare new and old schedule for ${file.username}`)
+		}
 	}
 	// If the old file don't exist, it's like it's a weelklyAgenda
 	else if(previousAgenda == 'Error' && currentAgenda != 'Error'){
@@ -382,7 +377,7 @@ export async function printAgenda(client, currentAgenda, file){
 		await gFunct.writeJsonFile('./users/agenda', `${file.userId}_agenda`, currentAgenda)
 	}
 	else{
-		log('ERROR currentAgenda = error')
+		log(`ERROR "currentAgenda = error" cannot create or overwrite ${file.userId}_agenda.json`)
 	}
 }
 
