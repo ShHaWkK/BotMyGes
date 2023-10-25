@@ -247,9 +247,6 @@ export async function printAgenda(client, currentAgenda, file){
 									if (currentAgenda[date].cours[i].content.time != previousAgenda[date].cours[i].content.time){
 										time = `~~${time}~~ => ${currentAgenda[date].cours[i].content.time}`
 										sentence_ok = 'True'
-										console.log(currentAgenda[date].cours[i].content.time)
-										console.log(previousAgenda[date].cours[i].content.time)
-										console.log('----------')
 									}
 
 									if (currentAgenda[date].cours[i].content.type != previousAgenda[date].cours[i].content.type){
@@ -327,7 +324,7 @@ export async function printAgenda(client, currentAgenda, file){
 				let agendaToWorkWithout = lengthOld > lengthNew ? currentAgenda : previousAgenda
 				var additionalInfos = lengthOld > lengthNew ? "have been delete" : "have been added"
 				var sentence = ''
-				// If a lesson has been added or deleted in another date
+				// If a lesson has been added or deleted in another date without any lessons
 				// Take all the date in the bigger schedule
 				for (var date in agendaToWorkWith){
 
