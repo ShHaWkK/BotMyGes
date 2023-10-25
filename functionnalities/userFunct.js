@@ -129,9 +129,11 @@ export async function printAgenda(client, currentAgenda, file){
 	let errorChannel = client.channels.cache.get(config.errorChannel)
 
 	// Try to read the json file
-	const previousAgenda = await readJsonFile(`./users/agenda/${file.userId}_agenda.json`)
+	let previousAgenda = await readJsonFile(`./users/agenda/${file.userId}_agenda.json`)
 
-	if (previousAgenda != 'Error'){
+	previousAgenda = 'Error'
+
+	if (previousAgenda != 'Error' && currentAgenda !='Error'){
 
 		try{
 
@@ -193,20 +195,37 @@ export async function printAgenda(client, currentAgenda, file){
 				}
 				else{
 					// If a lesson has been added
+					// Need to complete this section (more than one lesson can be added...)
 					scheduleChannel.send(`Un cours a été rajouté le **${date}**`)
 				}
 			}
-			// Overwrite the file with the new schedule
-			await gFunct.writeJsonFile('./users/agenda', `${file.userId}_agenda`, currentAgenda)
+			
+			// await gFunct.writeJsonFile('./users/agenda', `${file.userId}_agenda`, currentAgenda)
 		}
 		catch (error){
 			log(`ERROR : Impossible to compare new and old schedule for ${file.username}, ${error}`)
 			errorChannel.send(`Impossible to compare new and old schedule for ${file.username}`)
 		}
 	}
+	// If the old file don't exist
+	else if(previousAgenda == 'Error' && currentAgenda != 'Error'){
+		console.log(currentAgenda)
+		let sentence = ''
+		for (let date in currentAgenda){
+			let cours = currentAgenda[date].cours;
+			for (let i = 0; i < cours.length; i++) {
+				
+			}
+		}
+	}
 	else{
-		log(`Impossible to read ${file.userId}_agenda.json file , it probably doesn't exit, creating it..`)
-		errorChannel.send(`Impossible to read ${file.userId}_agenda.json file , it probably doesn't exit, creating it..`)
+		log(`Impossible to read ${file.userId}_agenda.json file, or retrieve currentAgenda...`)
+		errorChannel.send(`Impossible to read ${file.userId}_agenda.json file, or retrieve currentAgenda...`)
+		
+	}
+
+	if (currentAgenda != 'Error'){
+		// Overwrite the file with the new schedule
 		await gFunct.writeJsonFile('./users/agenda', `${file.userId}_agenda`, currentAgenda)
 	}
 }
@@ -330,12 +349,12 @@ export async function printAbsences(client, absences, file){
 
 		log('Send private message 2')
 		scheduleChannel.send(`You have **${nbHour}** new absences\n${sentence}`)
-		// userMessageChannel.send(`You have **${nbHour}** new absences\n${sentence}`)
+		userMessageChannel.send(`You have **${nbHour}** new absences\n${sentence}`)
 	}
 	else{
 		log(`ERROR : Error when retrieve absences for ${file.username}`)
 		errorChannel.send(`Error when retrieve absences for ${file.username}`)
-		userMessageChannel.send('Error when retrieve your absences')
+		// userMessageChannel.send('Error when retrieve your absences')
 	}
 
 	if (absences != 'Error'){
