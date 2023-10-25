@@ -360,7 +360,7 @@ export async function printAgenda(client, currentAgenda, file){
 				if (dateObj.getTime() >= today.getTime()) {
 					scheduleChannel.send(`# A day with lesson(s) ${additionalInfos} on **${realDate}**\n<@&${file.groupToPing}>\n${sentence}`)
 				}
-				
+
 			}
 
 		}
@@ -572,4 +572,3 @@ export async function printAbsences(client, absences, file){
 // }
 
 // ---------------------------------------------------------------------
-
