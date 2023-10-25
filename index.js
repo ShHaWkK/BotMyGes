@@ -97,7 +97,7 @@ async function retrieveMyGesData(client){
 					await userFunct.printAgenda(client, agenda, file)
 				}
 				catch (error){
-					// log(`Error when trying to fetch the schedule for ${login}, ${error}`)
+					log(`Error when trying to fetch the schedule for ${login}, ${error}`)
 					errorChannel.send(`Error when trying to fetch the schedule for ${login}`)
 				}
 
@@ -114,9 +114,9 @@ async function retrieveMyGesData(client){
 
 				// try{
 					// Retrieve absences
-					// const absences = await userFunct.Absences(user, userId, today)
+					const absences = await userFunct.Absences(user, userId, today)
 					// Print absences
-					// userFunct.printAbsences(client, absences, file)
+					userFunct.printAbsences(client, absences, file)
 				// }
 				// catch (error){
 					// log(`Error when trying to retrieve new absences for ${login}, ${error}`)

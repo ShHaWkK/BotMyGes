@@ -123,6 +123,63 @@ export async function Agenda(user, startD, endD, userId){
 
 // ---------------------------------------------------------------------
 
+// Get the current agenda and parse it into a sentence to print it in discord
+// Usefull when the old agenda don't exit, and each saturday...
+export async function rappelWeeklyAgenda(currentAgenda){
+
+	try{
+		let sentence = `# Your weekly schedule :\n`
+		for (var date in currentAgenda){
+			let cours = currentAgenda[date].cours;
+			sentence = sentence+`## ${date}\n`
+			for (let i = 0; i < cours.length; i++) {
+				let name = currentAgenda[date].cours[i].content.name
+				let time = currentAgenda[date].cours[i].content.time
+				let type = currentAgenda[date].cours[i].content.type
+				let modality = currentAgenda[date].cours[i].content.modality
+				let teacher = currentAgenda[date].cours[i].content.teacher
+				var miniSentence = `> - **	${time}**\n>  - ${type} : __${name}__\n>  - Modality : ${modality}\n>  - Teacher : ${teacher}\n\n`
+				sentence = sentence+miniSentence
+			}
+			
+		}
+		return sentence
+	}
+	catch{
+		return 'No weekly schedule'
+	}
+}
+
+// ---------------------------------------------------------------------
+
+export async function rappelDailyAgenda(currentAgenda){
+
+	try{
+		var date = new Date();
+		date = date.toLocaleDateString()
+
+		let sentence = `# Your daily schedule for ${date} :\n`
+		let cours = currentAgenda[date].cours;
+		sentence = sentence+`## ${date}\n`
+		for (let i = 0; i < cours.length; i++) {
+			let name = currentAgenda[date].cours[i].content.name
+			let time = currentAgenda[date].cours[i].content.time
+			let type = currentAgenda[date].cours[i].content.type
+			let modality = currentAgenda[date].cours[i].content.modality
+			let teacher = currentAgenda[date].cours[i].content.teacher
+			var miniSentence = `> - **	${time}**\n>  - ${type} : __${name}__\n>  - Modality : ${modality}\n>  - Teacher : ${teacher}\n\n`
+			sentence = sentence+miniSentence
+		}
+
+		return sentence
+	}
+	catch{
+		return 'No daily schedule'
+	}
+}
+
+// ---------------------------------------------------------------------
+
 export async function printAgenda(client, currentAgenda, file){
 	
 	let scheduleChannel = client.channels.cache.get(config.scheduleChannelId)
@@ -130,8 +187,6 @@ export async function printAgenda(client, currentAgenda, file){
 
 	// Try to read the json file
 	let previousAgenda = await readJsonFile(`./users/agenda/${file.userId}_agenda.json`)
-
-	previousAgenda = 'Error'
 
 	if (previousAgenda != 'Error' && currentAgenda !='Error'){
 
@@ -147,13 +202,14 @@ export async function printAgenda(client, currentAgenda, file){
 				// Checking dates in each agenda
 
 				// If a day exist in the previousAgenda and in the currentAgenda
-				if (previousAgenda[date]){
+				log('Checking new lessons')
+				if (date in previousAgenda && previousAgenda[date]){
 
 					let cours = currentAgenda[date].cours;
 					for (let i = 0; i < cours.length; i++) {
 						// console.log(date, currentAgenda[date].cours[i].time)
-						let sentence_ok = 'False'
-						let sentence
+						var sentence_ok = 'False'
+						var sentence
 						let name = previousAgenda[date].cours[i].content.name
 						let time = previousAgenda[date].cours[i].content.time
 						let type = previousAgenda[date].cours[i].content.type
@@ -189,34 +245,39 @@ export async function printAgenda(client, currentAgenda, file){
 						if (sentence_ok == 'True'){
 							sentence = `# Modification d'un cours le ${date} pour <@${file.userId}> !\n> - ${time}\n> - ${name}\n> - ${type}\n> - ${modality}\n> - ${teacher}`
 							scheduleChannel.send(sentence)
-						}		
+						}	
 
 					}
 				}
 				else{
 					// If a lesson has been added
-					// Need to complete this section (more than one lesson can be added...)
-					scheduleChannel.send(`Un cours a été rajouté le **${date}**`)
+					log('Creating message for new lesson')
+					let cours = currentAgenda[date].cours;
+					for (let i = 0; i < cours.length; i++) {
+						var sentence
+						let name = previousAgenda[date].cours[i].content.name
+						let time = previousAgenda[date].cours[i].content.time
+						let type = previousAgenda[date].cours[i].content.type
+						let modality = previousAgenda[date].cours[i].content.modality
+						let teacher = previousAgenda[date].cours[i].content.teacher
+
+						scheduleChannel.send(`## You have a new lesson on **${date}** at **${time}**\n> - ${type} : ${name}\n> - Modality : ${modality}\n> - Teacher : ${teacher}`)
+					}
 				}
+
+				sentence_ok == "False" ? log(`No new schedule for ${file.username} on ${date}`) : log(`New schedule for ${file.username} on ${date}`)
 			}
-			
-			// await gFunct.writeJsonFile('./users/agenda', `${file.userId}_agenda`, currentAgenda)
 		}
 		catch (error){
 			log(`ERROR : Impossible to compare new and old schedule for ${file.username}, ${error}`)
 			errorChannel.send(`Impossible to compare new and old schedule for ${file.username}`)
 		}
 	}
-	// If the old file don't exist
+	// If the old file don't exist, it's like it's a weelklyAgenda
 	else if(previousAgenda == 'Error' && currentAgenda != 'Error'){
-		console.log(currentAgenda)
-		let sentence = ''
-		for (let date in currentAgenda){
-			let cours = currentAgenda[date].cours;
-			for (let i = 0; i < cours.length; i++) {
-				
-			}
-		}
+		log('Parse and print the agenda for the week')
+		let resultats = await rappelWeeklyAgenda(currentAgenda)
+		scheduleChannel.send(resultats)
 	}
 	else{
 		log(`Impossible to read ${file.userId}_agenda.json file, or retrieve currentAgenda...`)
@@ -319,13 +380,29 @@ export async function printAbsences(client, absences, file){
 
 	// Compare current datas with already stored datas
 	if (old_absences != 'Error' && absences != 'Error') {
-		for (let date in absences){
-			console.log(absences[date])
-		}
+		let hoursMissed = 0
+		let sentence = `You have `
+		let concat = ''
 
-		log('Send private message 1')
-		scheduleChannel.send(`You have...`)
-		// userMessageChannel.send('PV message')
+		for (let date in absences){
+			for (let cours in absences[date]){
+				if (date in old_absences && cours in old_absences[date]){
+					console.log('Exist in the old')
+				}			
+				else{
+					hoursMissed ++
+					concat += `> - You missed **__${absences[date][cours].course_name}__** on ${date} at ${cours}\n`
+
+				}
+			}
+		}
+		sentence +=`${hoursMissed} new hours missed :\n${concat}`
+
+		if (hoursMissed > 0){
+			log('Send private message 1')
+			// scheduleChannel.send(sentence)
+			userMessageChannel.send(sentence)
+		}
 		
 	}
 	// If the file don't exist
@@ -348,8 +425,8 @@ export async function printAbsences(client, absences, file){
 		}
 
 		log('Send private message 2')
-		scheduleChannel.send(`You have **${nbHour}** new absences\n${sentence}`)
-		userMessageChannel.send(`You have **${nbHour}** new absences\n${sentence}`)
+		// scheduleChannel.send(`I detected **${nbHour}** absences\n${sentence}`)
+		userMessageChannel.send(`I detected **${nbHour}** absences\n${sentence}`)
 	}
 	else{
 		log(`ERROR : Error when retrieve absences for ${file.username}`)
