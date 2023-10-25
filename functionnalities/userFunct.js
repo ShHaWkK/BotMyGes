@@ -73,13 +73,24 @@ export async function Agenda(user, startD, endD, userId){
 		}
     }
 
-    // Sort the dict from the "lowest" date to the "uppest" date
+    // Sort the dict from the "lowest" date to the "uppest" date and by time
     // Idk how it works btw
-    const sortedData = Object.entries(dict).sort((a, b) => {
-	  const dateA = new Date(a[0].split('/').reverse().join('-'));
-	  const dateB = new Date(b[0].split('/').reverse().join('-'));
-	  return dateA - dateB;
-	});
+	const sortedData = Object.entries(dict).sort((a, b) => {
+		const dateA = new Date(a[0].split('/').reverse().join('-'));
+		const dateB = new Date(b[0].split('/').reverse().join('-'));
+		return dateA - dateB;
+	  }).map(([date, cours]) => {
+		const sortedCours = Object.entries(cours).sort(([heureA], [heureB]) => {
+		  const timeA = new Date(`1970-01-01T${heureA}`);
+		  const timeB = new Date(`1970-01-01T${heureB}`);
+		  return timeA - timeB;
+		}).reduce((acc, [heure, cours]) => {
+		  acc[heure] = cours;
+		  return acc;
+		}, {});
+		return [date, sortedCours];
+	  });
+	  
 
 	agenda = sortedData
 
@@ -190,7 +201,7 @@ export async function printAgenda(client, currentAgenda, file){
 
 	if (previousAgenda != 'Error' && currentAgenda !='Error'){
 
-		try{
+		// try{
 
 			log(`Comparing new to old agenda for ${file.userId}, ${file.username}`)
 
@@ -203,75 +214,107 @@ export async function printAgenda(client, currentAgenda, file){
 
 				// If a day exist in the previousAgenda and in the currentAgenda
 				log('Checking new lessons')
+				// If a date existed in the previous agenda
 				if (date in previousAgenda && previousAgenda[date]){
+					var sentence_ok = 'False'
 
 					let cours = currentAgenda[date].cours;
+
 					for (let i = 0; i < cours.length; i++) {
-						// console.log(date, currentAgenda[date].cours[i].time)
-						var sentence_ok = 'False'
-						var sentence
-						let name = previousAgenda[date].cours[i].content.name
-						let time = previousAgenda[date].cours[i].content.time
-						let type = previousAgenda[date].cours[i].content.type
-						let modality = previousAgenda[date].cours[i].content.modality
-						let teacher = previousAgenda[date].cours[i].content.teacher
 
-						if (currentAgenda[date].cours[i].content.name != previousAgenda[date].cours[i].content.name){
-							sentence = `# /!\\ Un cours a changé le ${date} !\n> - ${currentAgenda[date].cours[i].time}\n> - ~~${name}~~ => ${currentAgenda[date].cours[i].content.name}\n> - ${currentAgenda[date].cours[i].content.type}\n> - ${currentAgenda[date].cours[i].content.modality}\n> - ${currentAgenda[date].cours[i].content.teacher}`
-							scheduleChannel.send(sentence)
-							break
-						}
+						// console.log(cours[i])
+						//If a course has been modified
+						// console.log(previousAgenda[date])
+						if(date in previousAgenda && JSON.stringify(currentAgenda[date]) === JSON.stringify(previousAgenda[date])){
 
-						if (currentAgenda[date].cours[i].content.time != previousAgenda[date].cours[i].content.time){
-							time = `~~${time}~~ => ${currentAgenda[date].cours[i].content.time}`
-							sentence_ok = 'True'
-						}
+							// If a course has changed
+							// console.log(date, currentAgenda[date].cours[i].time)
+							var sentence
+							let name = previousAgenda[date].cours[i].content.name
+							let time = previousAgenda[date].cours[i].content.time
+							let type = previousAgenda[date].cours[i].content.type
+							let modality = previousAgenda[date].cours[i].content.modality
+							let teacher = previousAgenda[date].cours[i].content.teacher
 
-						if (currentAgenda[date].cours[i].content.type != previousAgenda[date].cours[i].content.type){
-							type = `~~${type}~~ => ${currentAgenda[date].cours[i].content.type}`
-							sentence_ok = 'True'
-						}
-			
-						if (currentAgenda[date].cours[i].content.modality != previousAgenda[date].cours[i].content.modality){
-							modality = `~~${modality}~~ => ${currentAgenda[date].cours[i].content.modality}`
-							sentence_ok = 'True'
-						}
-			
-						if (currentAgenda[date].cours[i].content.teacher != previousAgenda[date].cours[i].content.teacher){
-							teacher = `~~${teacher}~~ => ${currentAgenda[date].cours[i].content.teacher}`
-							sentence_ok = 'True'
-						}
+							if (currentAgenda[date].cours[i].content.name != previousAgenda[date].cours[i].content.name){
+								sentence = `# /!\\ Un cours a changé le ${date} !\n> - ${currentAgenda[date].cours[i].time}\n> - ~~${name}~~ => ${currentAgenda[date].cours[i].content.name}\n> - ${currentAgenda[date].cours[i].content.type}\n> - ${currentAgenda[date].cours[i].content.modality}\n> - ${currentAgenda[date].cours[i].content.teacher}`
+								scheduleChannel.send(sentence)
+								break
+							}
 
-						if (sentence_ok == 'True'){
-							sentence = `# Modification d'un cours le ${date} pour <@${file.userId}> !\n> - ${time}\n> - ${name}\n> - ${type}\n> - ${modality}\n> - ${teacher}`
-							scheduleChannel.send(sentence)
+							if (currentAgenda[date].cours[i].content.time != previousAgenda[date].cours[i].content.time){
+								time = `~~${time}~~ => ${currentAgenda[date].cours[i].content.time}`
+								sentence_ok = 'True'
+							}
+
+							if (currentAgenda[date].cours[i].content.type != previousAgenda[date].cours[i].content.type){
+								type = `~~${type}~~ => ${currentAgenda[date].cours[i].content.type}`
+								sentence_ok = 'True'
+							}
+				
+							if (currentAgenda[date].cours[i].content.modality != previousAgenda[date].cours[i].content.modality){
+								modality = `~~${modality}~~ => ${currentAgenda[date].cours[i].content.modality}`
+								sentence_ok = 'True'
+							}
+				
+							if (currentAgenda[date].cours[i].content.teacher != previousAgenda[date].cours[i].content.teacher){
+								teacher = `~~${teacher}~~ => ${currentAgenda[date].cours[i].content.teacher}`
+								sentence_ok = 'True'
+							}
+
+							if (sentence_ok == 'True'){
+								sentence = `# Modification d'un cours le ${date} pour <@${file.userId}> !\n> - ${time}\n> - ${name}\n> - ${type}\n> - ${modality}\n> - ${teacher}`
+								scheduleChannel.send(sentence)
+							}
+						}
+						else{
+
+							if ( JSON.stringify(currentAgenda[date].cours[i]) === JSON.stringify(previousAgenda[date].cours[i]) ){
+								
+							}
+							else{
+							
+								//If a new courses has been added in an existing date in previousAgenda-
+								sentence_ok = 'True'
+								// console.log(currentAgenda[date].cours[i])
+								// If a lesson has been added
+								let name = currentAgenda[date].cours[i].content.name
+								let time = currentAgenda[date].cours[i].content.time
+								log(`Creating message for ${name} on ${date} at ${time}`)
+								let type = currentAgenda[date].cours[i].content.type
+								let modality = currentAgenda[date].cours[i].content.modality
+								let teacher = currentAgenda[date].cours[i].content.teacher
+
+								scheduleChannel.send(`## Shedule changed ! New course added on **${date}**\nYou have a new lesson on **${date}** at **${time}**\n> - Day : ${date}\n> - Time : ${time}\n> - ${type} : ${name}\n> - Modality : ${modality}\n> - Teacher : ${teacher}`)
+							}
 						}	
 
 					}
 				}
 				else{
 					// If a lesson has been added
-					log('Creating message for new lesson')
+					log(`Creating message for new lesson in a new date ${date}`)
 					let cours = currentAgenda[date].cours;
+					sentence_ok = 'True'
 					for (let i = 0; i < cours.length; i++) {
-						var sentence
-						let name = previousAgenda[date].cours[i].content.name
-						let time = previousAgenda[date].cours[i].content.time
-						let type = previousAgenda[date].cours[i].content.type
-						let modality = previousAgenda[date].cours[i].content.modality
-						let teacher = previousAgenda[date].cours[i].content.teacher
+						let name = currentAgenda[date].cours[i].content.name
+						let time = currentAgenda[date].cours[i].content.time
+						let type = currentAgenda[date].cours[i].content.type
+						let modality = currentAgenda[date].cours[i].content.modality
+						let teacher = currentAgenda[date].cours[i].content.teacher
 
 						scheduleChannel.send(`## You have a new lesson on **${date}** at **${time}**\n> - ${type} : ${name}\n> - Modality : ${modality}\n> - Teacher : ${teacher}`)
 					}
 				}
 
 				sentence_ok == "False" ? log(`No new schedule for ${file.username} on ${date}`) : log(`New schedule for ${file.username} on ${date}`)
+				sentence_ok = "False"
 			}
-		}
-		catch (error){
-			log(`ERROR : Impossible to compare new and old schedule for ${file.username}, ${error}`)
-			errorChannel.send(`Impossible to compare new and old schedule for ${file.username}`)
-		}
+		// }
+		// catch (error){
+			// log(`ERRO	R : Impossible to compare new and old schedule for ${file.username}, ${error}`)
+			// errorChannel.send(`Impossible to compare new and old schedule for ${file.username}`)
+		// }
 	}
 	// If the old file don't exist, it's like it's a weelklyAgenda
 	else if(previousAgenda == 'Error' && currentAgenda != 'Error'){
@@ -288,6 +331,9 @@ export async function printAgenda(client, currentAgenda, file){
 	if (currentAgenda != 'Error'){
 		// Overwrite the file with the new schedule
 		await gFunct.writeJsonFile('./users/agenda', `${file.userId}_agenda`, currentAgenda)
+	}
+	else{
+		log('ERROR currentAgenda = error')
 	}
 }
 
@@ -387,7 +433,7 @@ export async function printAbsences(client, absences, file){
 		for (let date in absences){
 			for (let cours in absences[date]){
 				if (date in old_absences && cours in old_absences[date]){
-					console.log('Exist in the old')
+					hoursMissed = hoursMissed
 				}			
 				else{
 					hoursMissed ++

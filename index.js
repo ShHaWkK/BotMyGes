@@ -90,16 +90,16 @@ async function retrieveMyGesData(client){
 			const user = await userFunct.login(login, password)
 
 			if (user != 'Error'){
-				try{
+				// try{
 					// Request the agenda and write it in userId_agenda.json
 					const agenda = await userFunct.Agenda(user, monday, saturday, userId)
 					// print agenda if changed...
 					await userFunct.printAgenda(client, agenda, file)
-				}
-				catch (error){
-					log(`Error when trying to fetch the schedule for ${login}, ${error}`)
-					errorChannel.send(`Error when trying to fetch the schedule for ${login}`)
-				}
+				// }
+				// catch (error){
+					// log(`Error when trying to fetch the schedule for ${login}, ${error}`)
+					// errorChannel.send(`Error when trying to fetch the schedule for ${login}`)
+				// }
 
 				try{
 					// Retrieve grades
