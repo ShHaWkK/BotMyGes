@@ -284,14 +284,14 @@ export async function printAgenda(client, currentAgenda, file){
 									let modality = currentAgenda[date].cours[i].content.modality
 									let teacher = currentAgenda[date].cours[i].content.teacher
 
-									scheduleChannel.send(`## Shedule changed ! New lesson added on **${date}**\nYou have a new lesson on **${date}** at **${time}**\n> - Day : ${date}\n> - Time : ${time}\n> - ${type} : ${name}\n> - Modality : ${modality}\n> - Teacher : ${teacher}`)
+									scheduleChannel.send(`# Shedule changed ! New lesson added on **${date}**\nYou have a new lesson on **${date}** at **${time}**\n> - Day : ${date}\n> - Time : ${time}\n> - ${type} : ${name}\n> - Modality : ${modality}\n> - Teacher : ${teacher}`)
 								}
 							}
 						}
 					}
 				}
 				// If a course don't exist in currentAgenda but still exist in previousAgenda
-				else if(currentAgenda[date].cours.length < previousAgenda[date].cours.length){
+				else if(date in previousAgenda && previousAgenda[date] && currentAgenda[date].cours.length < previousAgenda[date].cours.length){
 
 					sentence_ok_2 = "True"
 					for (let i = 0; i < previousAgenda[date].cours.length; i++) {
@@ -304,30 +304,61 @@ export async function printAgenda(client, currentAgenda, file){
 							let type = previousAgenda[date].cours[i].content.type
 							let modality = previousAgenda[date].cours[i].content.modality
 							let teacher = previousAgenda[date].cours[i].content.teacher
-							scheduleChannel.send(`## Shedule changed ! Lesson deleted **${date}**\nThe lesson **${name}** have benn deleted on **${date}** at **${time}**\n> - Day : ${date}\n> - Time : ${time}\n> - ${type} : ${name}\n> - Modality : ${modality}\n> - Teacher : ${teacher}`)
+							scheduleChannel.send(`# Shedule changed ! Lesson deleted **${date}**\nThe lesson **${name}** have been deleted on **${date}** at **${time}**\n> - Day : ${date}\n> - Time : ${time}\n> - ${type} : ${name}\n> - Modality : ${modality}\n> - Teacher : ${teacher}`)
 						}
 
 					}
 				}
 				else{
-					// If a lesson has been added in another date
-					log(`Creating message for new lesson in a new date ${date}`)
-					let cours = currentAgenda[date].cours;
-					sentence_ok_2 = 'True'
-					for (let i = 0; i < cours.length; i++) {
-						let name = currentAgenda[date].cours[i].content.name
-						let time = currentAgenda[date].cours[i].content.time
-						let type = currentAgenda[date].cours[i].content.type
-						let modality = currentAgenda[date].cours[i].content.modality
-						let teacher = currentAgenda[date].cours[i].content.teacher
-
-						scheduleChannel.send(`## You have a new lesson on **${date}** at **${time}**\n> - ${type} : ${name}\n> - Modality : ${modality}\n> - Teacher : ${teacher}`)
-					}
+					
 				}
 
 				sentence_ok_2 == "False" ? '' : log(`New schedule for ${file.username} on ${date}`)
 				sentence_ok_2 = "False"
 			}
+
+			// If the new or old schedule is bigger than the other
+			// It means that they add (or delete) one day of lesson(s)
+			let lengthOld = Object.entries(previousAgenda).length
+			let lengthNew = Object.entries(currentAgenda).length
+			if (lengthOld != lengthNew){
+
+				let agendaToWorkWith = lengthOld > lengthNew ? previousAgenda : currentAgenda
+				let agendaToWorkWithout = lengthOld > lengthNew ? currentAgenda : previousAgenda
+				var additionalInfos = lengthOld > lengthNew ? "have been delete" : "have been added"
+				var sentence = ''
+				// If a lesson has been added or deleted in another date
+				// Take all the date in the bigger schedule
+				for (var date in agendaToWorkWith){
+
+					//Check if it exist and define
+					if (!(date in agendaToWorkWithout) || !agendaToWorkWithout[date]){
+
+						log(`Creating message for new lesson in a new date ${date}`)
+						let cours = agendaToWorkWith[date].cours;
+						sentence_ok_2 = 'True'
+						var realDate = date
+						for (let i = 0; i < cours.length; i++) {
+							let name = agendaToWorkWith[date].cours[i].content.name
+							let time = agendaToWorkWith[date].cours[i].content.time
+							let type = agendaToWorkWith[date].cours[i].content.type
+							let modality = agendaToWorkWith[date].cours[i].content.modality
+							let teacher = agendaToWorkWith[date].cours[i].content.teacher
+
+							sentence += `> - Time : ${time}\n> - ${type} : ${name}\n> - Modality : ${modality}\n> - Teacher : ${teacher}\n\n`
+						}
+					}
+				}
+
+				scheduleChannel.send(`# A day with lesson(s) ${additionalInfos} on **${realDate}**\n${sentence}`)
+
+			}
+			else{
+				
+			}
+			// else if (Object.entries(previousAgenda).length < Object.entries(currentAgenda).length){
+			// 	console.log('Vous avez cours une journée en plus')
+			// }
 		// }
 		// catch (error){
 			// log(`ERRO	R : Impossible to compare new and old schedule for ${file.username}, ${error}`)
