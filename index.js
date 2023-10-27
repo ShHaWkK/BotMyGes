@@ -54,7 +54,7 @@ function main(){
 		})
 
 		client.user.setStatus('dnd');
-		cccccccccccc
+		
 
 		try{
 			
