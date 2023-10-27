@@ -14,8 +14,6 @@ import fs from 'fs'
 
 // ------------------------------------------------------------------
 
-// ------------------------------------------------------------------
-
 export function log(str) {
   // Determinate the path of the globalFunct.js file
   const __filename = fileURLToPath(import.meta.url);
@@ -49,39 +47,47 @@ export async function listJsonFile(Path) {
   } catch (err) {
     // console.error('Error reading directory:', err);
     log(`ERROR : Reading directory ${relativePath}, ${err}`)
-    return ['Error'];
+    return 'Error';
   }
 }
 
 // ------------------------------------------------------------------
 
-export function readJsonFile(fileName) {
+export async function readJsonFile(fileName) {
   try {
-    // const directoryPath = './ytbChannels/';
-    // const data = fs.readFileSync(directoryPath + fileName, 'utf8');
     const data = fs.readFileSync(fileName, 'utf8');
     return JSON.parse(data);
   } catch (error) {
     // console.error('Erreur de lecture du fichier JSON:', error);
-    log(`ERROR : Reading Json file ${filename}, ${error}`)
-    return ['Error'];
+    log(`ERROR : Reading Json file ${fileName}, ${error}`)
+    return 'Error';
   }
 }
 
 // ------------------------------------------------------------------
 
-export async function writeJsonFile(path, name, array){
+export async function writeJsonFile(directoryPath, name, array){
 
-  const json = JSON.stringify(array, null, 2);
+  const directories = directoryPath.split(path.sep);
+  let currentPath = '';
+  const json = JSON.stringify(array, null, 2)
 
-  fs.writeFile(`${path}/${name}.json`, json, (err) => {
+  directories.forEach((directory) => {
+    currentPath = path.join(currentPath, directory);
+    if (!fs.existsSync(currentPath)) {
+      fs.mkdirSync(currentPath);
+    }
+  });
+
+
+  fs.writeFile(`${directoryPath}/${name}.json`, json, (err) => {
 	  if (err) {
 	    console.error(err);
-      log(`Error while writing file ${err}`)
+      log(`ERROR : error while writing file ${directoryPath}/${name}.json, ${err}`)
 	    return;
 	  }
 	  // console.log('Data written to file');
-    log(`Data written to ${name}.json`)
+    log(`Data written to ${directoryPath}/${name}.json`)
 	});
 }
 
@@ -98,23 +104,46 @@ Date.prototype.getWeek = function() {
 
 // ------------------------------------------------------------------
 
-// Calculate the date of the monday of the current week
-Date.prototype.getWeekMonday = function() {
-  var date = new Date(this.getTime());
-  var day = date.getDay();
-  var diff = date.getDate() - day + (day == 0 ? -6 : 1);
-  return new Date(date.setDate(diff)).toLocaleDateString('en-US').split('/').join('-');
-};
+// // Calculate the date of the monday of the current week
+// Date.prototype.getWeekMonday = function() {
+//   var date = new Date(this.getTime());
+//   var day = date.getDay();
+//   var diff = date.getDate() - day + (day == 0 ? -6 : 1);
+//   return new Date(date.setDate(diff)).toLocaleDateString('en-US').split('/').join('-');
+// };
 
-// ------------------------------------------------------------------
+// // ------------------------------------------------------------------
 
-// Calculate the date of the saturday of the current week
-Date.prototype.getWeekSaturday = function() {
-  var date = new Date(this.getTime());
-  var day = date.getDay();
-  var diff = date.getDate() - day + (day == 0 ? 0 : 6);
-  return new Date(date.setDate(diff)).toLocaleDateString('en-US').split('/').join('-');
-};
+// // Calculate the date of the saturday of the current week
+// Date.prototype.getWeekSaturday = function() {
+//   var date = new Date(this.getTime());
+//   var day = date.getDay();
+//   var diff = date.getDate() - day + (day == 0 ? 0 : 6);
+//   return new Date(date.setDate(diff)).toLocaleDateString('en-US').split('/').join('-');
+
+  
+  
+// };
+
+
+export function getWeekMonday(){
+  var today = new Date();
+  today.setHours(0, 0, 0)
+  var dayOfWeek = today.getDay();
+  var daysUntilMonday = dayOfWeek === 0 ? 1 : 8 - dayOfWeek;
+  var monday = new Date(today.getTime() + daysUntilMonday * 24 * 60 * 60 * 1000);
+  return monday
+}
+
+export function getWeekSaturday(){
+  var today = new Date();
+  today.setHours(0, 0, 0)
+  var dayOfWeek = today.getDay();
+  var daysUntilSaturday = dayOfWeek === 6 ? 1 : 6 - dayOfWeek;
+  var saturday = new Date(today.getTime() + daysUntilSaturday * 24 * 60 * 60 * 1000);
+  return saturday
+}
+
 
 // ------------------------------------------------------------------
 
