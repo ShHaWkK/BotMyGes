@@ -14,8 +14,6 @@ import fs from 'fs'
 
 // ------------------------------------------------------------------
 
-// ------------------------------------------------------------------
-
 export function log(str) {
   // Determinate the path of the globalFunct.js file
   const __filename = fileURLToPath(import.meta.url);
@@ -106,23 +104,46 @@ Date.prototype.getWeek = function() {
 
 // ------------------------------------------------------------------
 
-// Calculate the date of the monday of the current week
-Date.prototype.getWeekMonday = function() {
-  var date = new Date(this.getTime());
-  var day = date.getDay();
-  var diff = date.getDate() - day + (day == 0 ? -6 : 1);
-  return new Date(date.setDate(diff)).toLocaleDateString('en-US').split('/').join('-');
-};
+// // Calculate the date of the monday of the current week
+// Date.prototype.getWeekMonday = function() {
+//   var date = new Date(this.getTime());
+//   var day = date.getDay();
+//   var diff = date.getDate() - day + (day == 0 ? -6 : 1);
+//   return new Date(date.setDate(diff)).toLocaleDateString('en-US').split('/').join('-');
+// };
 
-// ------------------------------------------------------------------
+// // ------------------------------------------------------------------
 
-// Calculate the date of the saturday of the current week
-Date.prototype.getWeekSaturday = function() {
-  var date = new Date(this.getTime());
-  var day = date.getDay();
-  var diff = date.getDate() - day + (day == 0 ? 0 : 6);
-  return new Date(date.setDate(diff)).toLocaleDateString('en-US').split('/').join('-');
-};
+// // Calculate the date of the saturday of the current week
+// Date.prototype.getWeekSaturday = function() {
+//   var date = new Date(this.getTime());
+//   var day = date.getDay();
+//   var diff = date.getDate() - day + (day == 0 ? 0 : 6);
+//   return new Date(date.setDate(diff)).toLocaleDateString('en-US').split('/').join('-');
+
+  
+  
+// };
+
+
+export function getWeekMonday(){
+  var today = new Date();
+  today.setHours(0, 0, 0)
+  var dayOfWeek = today.getDay();
+  var daysUntilMonday = dayOfWeek === 0 ? 1 : 8 - dayOfWeek;
+  var monday = new Date(today.getTime() + daysUntilMonday * 24 * 60 * 60 * 1000);
+  return monday
+}
+
+export function getWeekSaturday(){
+  var today = new Date();
+  today.setHours(0, 0, 0)
+  var dayOfWeek = today.getDay();
+  var daysUntilSaturday = dayOfWeek === 6 ? 1 : 6 - dayOfWeek;
+  var saturday = new Date(today.getTime() + daysUntilSaturday * 24 * 60 * 60 * 1000);
+  return saturday
+}
+
 
 // ------------------------------------------------------------------
 

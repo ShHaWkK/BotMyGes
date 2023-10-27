@@ -7,9 +7,10 @@ export async function retrieveMyGesData(client){
 
     // Create the current date
     var today = new Date();
+	today.setHours(0, 0, 0)
     var weekNumber = today.getWeek();
-    var monday = new Date(today.getWeekMonday(weekNumber))
-    var saturday = new Date(today.getWeekSaturday(weekNumber))
+	var monday = gFunct.getWeekMonday()
+	var saturday = gFunct.getWeekSaturday()
 
 	log('Retrieve myges data..')
 	const discordClient = client
@@ -36,16 +37,16 @@ export async function retrieveMyGesData(client){
 			const user = await userFunct.login(login, password)
 
 			if (user != 'Error'){
-				try{
+				// try{
 					// Request the agenda and write it in userId_agenda.json
 					const agenda = await userFunct.Agenda(user, monday, saturday, userId)
 					// print agenda if changed...
-					await userFunct.printAgenda(client, agenda, file)
-				}
-				catch (error){
-					log(`Error when trying to fetch the schedule for ${login}, ${error}`)
-					errorChannel.send(`Error when trying to fetch the schedule for ${login}`)
-				}
+					await userFunct.printAgenda(client, agenda, file, user)
+				// }
+				// catch (error){
+				// 	log(`Error when trying to fetch the schedule for ${login}, ${error}`)
+				// 	errorChannel.send(`Error when trying to fetch the schedule for ${login}`)
+				// }
 
 				try{
 					// Retrieve grades

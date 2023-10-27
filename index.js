@@ -15,15 +15,8 @@ import { Client, GatewayIntentBits, ActivityType, Events } from 'discord.js';
 import config from './config.json' assert { type: 'json' };
 // import * as userFunct from './functionnalities/userFunct.js'
 import { retrieveMyGesData } from './functionnalities/retrieveDatas.js'
-// import * as gFunct from './functionnalities/globalFunct.js'
+import * as gFunct from './functionnalities/globalFunct.js'
 import { log } from './functionnalities/globalFunct.js'
-
-// Create the current date
-// gonna be usefull for weekly ping
-var today = new Date();
-var weekNumber = today.getWeek();
-var monday = new Date(today.getWeekMonday(weekNumber))
-var saturday = new Date(today.getWeekSaturday(weekNumber))
 
 
 function main(){
@@ -51,13 +44,13 @@ function main(){
 
 		client.user.setStatus('dnd');
 
-		try{
+		// try{
 			// setInterval(retrieveMyGesData(), 900000)
 			retrieveMyGesData(client)
-		}
-		catch(error){
-			log(error)
-		}
+		// }
+		// catch(error){
+		// 	log(error)
+		// }
     })
 }
 

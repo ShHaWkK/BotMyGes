@@ -23,8 +23,6 @@ import myGes from 'myges';
 import fs from 'fs'
 import { assert } from 'console';
 
-import test from '../coucou_absences.json' assert { type: 'json' }
-
 
 // ---------------------------------------------------------------------
 
@@ -42,15 +40,28 @@ export async function login(username, password){
 	}
 }
 
+
+export async function getClasses(user, year) {
+	// Return the class of the user, using the api
+	return await user.request('GET', `/me/${year}/classes`)
+}
+
 // -------------------------AGENDA-------------------------------
 
 // Get the agenda from the api then sort it by date and by time
 // param user is mandatory to call the gesapi functions
-export async function Agenda(user, startD, endD, userId){
+export async function Agenda(user, startD, endD){
 	log('Request myGes Agenda')
+
+	log('Request class')
+	const now = new Date();
+	const currentYear = now.getFullYear();
+	let classes = await getClasses(user, currentYear)
+	classes = `${classes[0].promotion} - ${classes[0].name}`
 
 	// Agenda have a lot unsorted objects inside
 	let agenda = await user.getAgenda(startD, endD)
+	
 
 	log('Creating Agenda array')
 	// Create an array to store objects by date, then by time
@@ -98,7 +109,8 @@ export async function Agenda(user, startD, endD, userId){
 	// Never change the "1"	
 	// agenda[i][0] is always the date
 	// agenda[i][1] is always an object named with the time
-	log(`Preparing ${userId}_agenda.json`)
+
+	log(`Preparing ${classes}_agenda.json`)
 	let agendaToWrite = {}
 	for (var i = 0; i < agenda.length; i++) {
 		
@@ -110,6 +122,7 @@ export async function Agenda(user, startD, endD, userId){
 			let modality = agenda[i][1][obj].modality
 			let nameCours = agenda[i][1][obj].name
 			let teacher = agenda[i][1][obj].teacher
+			let student_group_name = agenda[i][1][obj].discipline.student_group_name
 
 			let tmp = {
 				"time":obj,
@@ -118,7 +131,8 @@ export async function Agenda(user, startD, endD, userId){
 					"type": type,
 					"modality": modality,
 					"name": nameCours,
-					"teacher": teacher
+					"teacher": teacher,
+					"student_group_name": student_group_name
 				}
 			}
 			cours.push(tmp)
@@ -136,10 +150,10 @@ export async function Agenda(user, startD, endD, userId){
 
 // Get the current agenda and parse it into a sentence to print it in discord
 // Usefull when the old agenda don't exit, and each saturday...
-export async function rappelWeeklyAgenda(currentAgenda){
+export async function rappelWeeklyAgenda(currentAgenda, optionnalSentence = ''){
 
 	try{
-		let sentence = `# Your weekly schedule :\n`
+		let sentence = `# Your weekly schedule ${optionnalSentence} :\n`
 		for (var date in currentAgenda){
 			let cours = currentAgenda[date].cours;
 			sentence = sentence+`## ${date}\n`
@@ -191,7 +205,7 @@ export async function rappelDailyAgenda(currentAgenda){
 
 // ---------------------------------------------------------------------
 
-export async function printAgenda(client, currentAgenda, file){
+export async function printAgenda(client, currentAgenda, file, user){
 	
 	let scheduleChannel = client.channels.cache.get(config.scheduleChannelId)
 	let errorChannel = client.channels.cache.get(config.errorChannel)
@@ -200,16 +214,40 @@ export async function printAgenda(client, currentAgenda, file){
 	const today = new Date();
 	today.setHours(0, 0, 0, 0)
 
+	const now = new Date();
+	const currentYear = now.getFullYear();
+
+	// Take the name of the classe (promotion + name)
+	log('Request class')
+	let classes = await getClasses(user, currentYear)
+	classes = `${classes[0].promotion} - ${classes[0].name}`
+
+	// saturday
+	log('Compare if its saturday')
+	var saturday = gFunct.getWeekSaturday()
+
+	if (today <= saturday){
+		let monday = gFunct.getWeekMonday()
+		monday.setDate(monday.getDate() + 7);
+		console.log(saturday);
+
+		let sentence = await rappelWeeklyAgenda(currentAgenda, 'for the next week')
+		scheduleChannel.send(sentence)
+		return
+	}
+	
+
 	// Try to read the json file
-	let previousAgenda = await readJsonFile(`./users/agenda/${file.userId}_agenda.json`)
+	let previousAgenda = await readJsonFile(`./users/agenda/${classes}_agenda.json`)
 
 	if (previousAgenda != 'Error' && currentAgenda !='Error'){
 
-		try{
+		// try{
 
-			log(`Comparing new to old agenda for ${file.userId}, ${file.username}`)
+			log(`Comparing new to old agenda for ${classes}, ${file.username}`)
 
-			//Checking date
+			// Need to create it here to detect the student class name
+			var student_group_name = null
 			
 			//Boucle qui permet de parcourir les datas
 			// Reach each content in each dates
@@ -231,7 +269,13 @@ export async function printAgenda(client, currentAgenda, file){
 
 						for (let i = 0; i < cours.length; i++) {
 
-							// console.log(cours[i])
+							// Take the student_group_name
+							// Gonna craash if you have a week with just OPEN and Anglais :/
+							if (currentAgenda[date].cours[i].name != 'OPEN ESGI' && currentAgenda[date].cours[i].name != 'ANGLAIS'){
+								student_group_name = currentAgenda[date].cours[i].student_group_name
+							}
+							
+
 							//If a course has been modified
 							// console.log(previousAgenda[date])
 							if(date in previousAgenda ){
@@ -363,11 +407,11 @@ export async function printAgenda(client, currentAgenda, file){
 
 			}
 
-		}
-		catch (error){
-			log(`ERRO	R : Impossible to compare new and old schedule for ${file.username}, ${error}`)
-			errorChannel.send(`Impossible to compare new and old schedule for ${file.username}`)
-		}
+		// }
+		// catch (error){
+		// 	log(`ERROR : Impossible to compare new and old schedule for ${file.username}, ${error}`)
+		// 	errorChannel.send(`Impossible to compare new and old schedule for ${file.username}`)
+		// }
 	}
 	// If the old file don't exist, it's like it's a weelklyAgenda
 	else if(previousAgenda == 'Error' && currentAgenda != 'Error'){
@@ -376,17 +420,17 @@ export async function printAgenda(client, currentAgenda, file){
 		scheduleChannel.send(resultats)
 	}
 	else{
-		log(`Impossible to read ${file.userId}_agenda.json file, or retrieve currentAgenda...`)
-		errorChannel.send(`Impossible to read ${file.userId}_agenda.json file, or retrieve currentAgenda...`)
+		log(`Impossible to read ${classes}_agenda.json file, or retrieve currentAgenda...`)
+		errorChannel.send(`Impossible to read ${classesd}_agenda.json file, or retrieve currentAgenda...`)
 		
 	}
 
 	if (currentAgenda != 'Error'){
 		// Overwrite the file with the new schedule
-		await gFunct.writeJsonFile('./users/agenda', `${file.userId}_agenda`, currentAgenda)
+		await gFunct.writeJsonFile('./users/agenda', `${classes}_agenda`, currentAgenda)
 	}
 	else{
-		log(`ERROR "currentAgenda = error" cannot create or overwrite ${file.userId}_agenda.json`)
+		log(`ERROR "currentAgenda = error" cannot create or overwrite ${classes}_agenda.json`)
 	}
 }
 
