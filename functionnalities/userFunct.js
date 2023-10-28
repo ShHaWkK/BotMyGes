@@ -191,7 +191,7 @@ export async function rappelTomorrowAgenda(currentAgenda, file){
 		date.setDate(date.getDate() - 1);
 		date = date.toLocaleDateString()
 
-		let sentence = `# Your daily schedule for ${date} :\n<@&${file.groupToPing}>\n`
+		let sentence = `# Your daily schedule for ${date} :\n`
 		
 		if (currentAgenda[date]?.cours){
 			let cours = currentAgenda[date].cours
