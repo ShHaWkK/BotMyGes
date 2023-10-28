@@ -9,7 +9,6 @@ export async function retrieveMyGesData(client){
     // Create the current date
     var today = new Date();
 	today.setHours(0, 0, 0)
-	const week = gFunct.getWeek(today)
 	var monday = gFunct.getWeekMonday()
 	var saturday = gFunct.getWeekSaturday()
 
@@ -41,9 +40,7 @@ export async function retrieveMyGesData(client){
 				// try{
 					// Request the agenda and write it in userId_agenda.json
 					const agenda = await userFunct.Agenda(user, monday, saturday, userId)
-					// const agenda = await userFunct.Agenda(user, '22-10-2023', '27-10-2023', userId)
-					// console.log(agenda)
-					process.exit()
+
 					// print agenda if changed...
 					await userFunct.printAgenda(client, agenda, file, user)
 				// }

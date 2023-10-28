@@ -93,75 +93,36 @@ export async function writeJsonFile(directoryPath, name, array){
 
 // ------------------------------------------------------------------
 
-// Calculate the number of the current week
-Date.prototype.getWeek = function() {
-  var date = new Date(this.getTime());
-  date.setHours(0, 0, 0, 0);
-  date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
-  var week1 = new Date(date.getFullYear(), 0, 4);
-  return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
-};
+export function getWeekMonday(){
+  var today = new Date();
+  today.setHours(0, 0, 0)
+  var dayOfWeek = today.getDay();
+  // var daysUntilMonday = dayOfWeek === 0 ? 1 : 8 - dayOfWeek;
+  var daysUntilMonday = dayOfWeek === 0 ? 6 : 1 - dayOfWeek;
+  var monday = new Date(today.getTime() + daysUntilMonday * 24 * 60 * 60 * 1000);
+  return monday
+}
 
 // ------------------------------------------------------------------
 
-// // Calculate the date of the monday of the current week
-// Date.prototype.getWeekMonday = function() {
-//   var date = new Date(this.getTime());
-//   var day = date.getDay();
-//   var diff = date.getDate() - day + (day == 0 ? -6 : 1);
-//   return new Date(date.setDate(diff)).toLocaleDateString('en-US').split('/').join('-');
-// };
-
-// // ------------------------------------------------------------------
-
-// // Calculate the date of the saturday of the current week
-// Date.prototype.getWeekSaturday = function() {
-//   var date = new Date(this.getTime());
-//   var day = date.getDay();
-//   var diff = date.getDate() - day + (day == 0 ? 0 : 6);
-//   return new Date(date.setDate(diff)).toLocaleDateString('en-US').split('/').join('-');
-
-  
-  
-// };
-
-export function getWeek(week) {
-  var date = new Date(week.getTime());
-  date.setHours(0, 0, 0, 0);
-  date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
-  var week1 = new Date(date.getFullYear(), 0, 4);
-  return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
-};
-
-export function getWeekMonday(){
-
-  var today = new Date();
-  // var today = new Date();
-  // today.setHours(0, 0, 0)
-  // var dayOfWeek = today.getDay();
-  // var daysUntilMonday = dayOfWeek === 0 ? 6  : 1 - dayOfWeek;
-  // var monday = new Date(today.getTime() + daysUntilMonday * 24 * 60 * 60 * 1000);
-  // return monday.toLocaleDateString('en-US').split('/').join('-');
-  var date = new Date(today.getTime());
-  var day = date.getDay();
-  var diff = date.getDate() - day + (day == 0 ? -6 : 1);
-  return new Date(date.setDate(diff)).toLocaleDateString().split('/').join('-');
-}
-
 export function getWeekSaturday(){
   var today = new Date();
-  // today.setHours(0, 0, 0)
-  // var dayOfWeek = today.getDay();
-  // var daysUntilSaturday = dayOfWeek === 6 ? 1 : 6 - dayOfWeek;
-  // var saturday = new Date(today.getTime() + daysUntilSaturday * 24 * 60 * 60 * 1000);
-  // return saturday.toLocaleDateString('en-US').split('/').join('-');
-
-  var date = new Date(today.getTime());
-  var day = date.getDay();
-  var diff = date.getDate() - day + (day == 0 ? 0 : 6);
-  return new Date(date.setDate(diff-1)).toLocaleDateString().split('/').join('-');
+  today.setHours(0, 0, 0)
+  var dayOfWeek = today.getDay();
+  var daysUntilSaturday = dayOfWeek === 6 ? 1 : 6 - dayOfWeek;
+  var saturday = new Date(today.getTime() + daysUntilSaturday * 24 * 60 * 60 * 1000);
+  return saturday
 }
 
+// ------------------------------------------------------------------
+
+// export function getWeek(week) {
+//   var date = new Date(week.getTime());
+//   date.setHours(0, 0, 0, 0);
+//   date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
+//   var week1 = new Date(date.getFullYear(), 0, 4);
+//   return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
+// };
 
 // ------------------------------------------------------------------
 

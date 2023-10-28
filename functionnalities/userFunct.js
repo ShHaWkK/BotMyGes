@@ -54,19 +54,14 @@ export async function Agenda(user, startD, endD){
 	log('Request myGes Agenda')
 
 	log('Request class')
-	// const now = new Date();
-	// const currentYear = now.getFullYear();
-	// let classes = await getClasses(user, currentYear)
-	// classes = `${classes[0].promotion} - ${classes[0].name}`
+	const now = new Date();
+	const currentYear = now.getFullYear();
+	let classes = await getClasses(user, currentYear)
+	classes = `${classes[0].promotion} - ${classes[0].name}`
+	log(`Classes : ${classes}`)
 
 	// Agenda have a lot unsorted objects inside
-	console.log(startD, endD)
-
-	// Ca bug cette merde....
-	// process.exit()
 	let agenda = await user.getAgenda(startD, endD)
-	console.log(agenda)
-	process.exit()
 	
 
 	log('Creating Agenda array')
