@@ -22,6 +22,7 @@ import * as gFunct from './globalFunct.js'
 import myGes from 'myges';
 import fs from 'fs'
 import { assert } from 'console';
+import { start } from 'repl';
 
 
 // ---------------------------------------------------------------------
@@ -211,31 +212,43 @@ export async function printAgenda(client, currentAgenda, file, user){
 	let scheduleChannel = client.channels.cache.get(config.scheduleChannelId)
 	let errorChannel = client.channels.cache.get(config.errorChannel)
 
-	// Creating it to only compare comming days 
-	const today = new Date();
-	today.setHours(0, 0, 0, 0)
-
-	const now = new Date();
-	const currentYear = now.getFullYear();
+	// let timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+	let today = new Date()
 
 	// Take the name of the classe (promotion + name)
 	log('Request class')
-	let classes = await getClasses(user, currentYear)
+	let classes = await getClasses(user, today.getFullYear())
 	classes = `${classes[0].promotion} - ${classes[0].name}`
 
-	// saturday
-	log('Compare if its saturday')
-	var saturday = gFunct.getWeekSaturday()
+	log("Compare if today it's saturday")
+	var saturday = new Date(gFunct.getWeekSaturday());
+	// If I set 0 to hours, saturday it set to saturday 22h :/
+	saturday.setHours(-20, 0, 0, 0);
 
-	// if (today >= saturday){
-	// 	let monday = gFunct.getWeekMonday()
-	// 	monday.setDate(monday.getDate() + 7);
-	// 	// console.log(saturday);
+	console.log('today', today);
+	console.log('samedi', saturday)
 
-	// 	let sentence = await rappelWeeklyAgenda(currentAgenda, 'for the next week')
-	// 	scheduleChannel.send(sentence)
-	// 	return
-	// }
+	if (today >= saturday){
+		log(`It's Saturday, requesting next week schedule`)
+		let monday = gFunct.getWeekMonday()
+		monday.setDate(monday.getDate() + 7);
+
+		let saturday = gFunct.getWeekSaturday()
+		saturday.setDate(saturday.getDate() + 7);
+
+		console.log(monday, saturday);
+		// process.exit()
+
+		let agenda = await Agenda(user, monday, saturday)
+		let sentence = await rappelWeeklyAgenda(agenda, 'for the next week')
+		scheduleChannel.send(sentence)
+		process.exit()
+		return
+	}
+	else{
+		console.log('PAS OUÉÉÉÉÉÉÉÉÉÉ')
+		process.exit()
+	}
 
 	// console.log(currentAgenda)
 	
