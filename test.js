@@ -25,3 +25,16 @@ const user = await userFunct.login(login, password)
 const test = await userFunct.getClasses(user, '2023')
 
 console.log(`${test[0].promotion} - ${test[0].name}`)
+
+
+
+/*
+const saturday = new Date(gFunct.getWeekSaturday());
+saturday.setDate(saturday.getDate() + 7);
+console.log(saturday.toLocaleDateString()); // affiche la date du samedi suivant au format "jj/mm/aaaa"
+
+
+
+
+
+*/

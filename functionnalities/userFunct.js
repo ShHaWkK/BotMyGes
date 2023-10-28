@@ -54,13 +54,19 @@ export async function Agenda(user, startD, endD){
 	log('Request myGes Agenda')
 
 	log('Request class')
-	const now = new Date();
-	const currentYear = now.getFullYear();
-	let classes = await getClasses(user, currentYear)
-	classes = `${classes[0].promotion} - ${classes[0].name}`
+	// const now = new Date();
+	// const currentYear = now.getFullYear();
+	// let classes = await getClasses(user, currentYear)
+	// classes = `${classes[0].promotion} - ${classes[0].name}`
 
 	// Agenda have a lot unsorted objects inside
+	console.log(startD, endD)
+
+	// Ca bug cette merde....
+	// process.exit()
 	let agenda = await user.getAgenda(startD, endD)
+	console.log(agenda)
+	process.exit()
 	
 
 	log('Creating Agenda array')
@@ -141,7 +147,7 @@ export async function Agenda(user, startD, endD){
 	}
 
 	agenda = agendaToWrite
-
+	
 	return agenda
 
 }
@@ -226,15 +232,17 @@ export async function printAgenda(client, currentAgenda, file, user){
 	log('Compare if its saturday')
 	var saturday = gFunct.getWeekSaturday()
 
-	if (today <= saturday){
-		let monday = gFunct.getWeekMonday()
-		monday.setDate(monday.getDate() + 7);
-		console.log(saturday);
+	// if (today >= saturday){
+	// 	let monday = gFunct.getWeekMonday()
+	// 	monday.setDate(monday.getDate() + 7);
+	// 	// console.log(saturday);
 
-		let sentence = await rappelWeeklyAgenda(currentAgenda, 'for the next week')
-		scheduleChannel.send(sentence)
-		return
-	}
+	// 	let sentence = await rappelWeeklyAgenda(currentAgenda, 'for the next week')
+	// 	scheduleChannel.send(sentence)
+	// 	return
+	// }
+
+	// console.log(currentAgenda)
 	
 
 	// Try to read the json file
@@ -271,70 +279,70 @@ export async function printAgenda(client, currentAgenda, file, user){
 
 							// Take the student_group_name
 							// Gonna craash if you have a week with just OPEN and Anglais :/
-							if (currentAgenda[date].cours[i].name != 'OPEN ESGI' && currentAgenda[date].cours[i].name != 'ANGLAIS'){
+							if (currentAgenda[date].cours[i].name == 'OPEN ESGI' && currentAgenda[date].cours[i].name == 'ANGLAIS'){
 								student_group_name = currentAgenda[date].cours[i].student_group_name
-							}
-							
+								console.log('coucou')
 
-							//If a course has been modified
-							// console.log(previousAgenda[date])
-							if(date in previousAgenda ){
+								//If a course has been modified
+								// console.log(previousAgenda[date])
+								if(date in previousAgenda ){
 
-								try{
-									// If a lesson has been added, try to acces it into previous agenda and crash => see the catch function
-									// If a course has been updated
-									var sentence
-									let name = previousAgenda[date].cours[i].content.name
-									let time = previousAgenda[date].cours[i].content.time
-									let type = previousAgenda[date].cours[i].content.type
-									let modality = previousAgenda[date].cours[i].content.modality
-									let teacher = previousAgenda[date].cours[i].content.teacher
+									try{
+										// If a lesson has been added, try to acces it into previous agenda and crash => see the catch function
+										// If a course has been updated
+										var sentence
+										let name = previousAgenda[date].cours[i].content.name
+										let time = previousAgenda[date].cours[i].content.time
+										let type = previousAgenda[date].cours[i].content.type
+										let modality = previousAgenda[date].cours[i].content.modality
+										let teacher = previousAgenda[date].cours[i].content.teacher
 
-									if (currentAgenda[date].cours[i].content.name != previousAgenda[date].cours[i].content.name){
-										sentence = `# /!\\ A lesson change on ${date} !\n<@&${file.groupToPing}>\n> - ~~${time}~~ => ${currentAgenda[date].cours[i].time}\n> - ~~${name}~~ => ${currentAgenda[date].cours[i].content.name}\n> - ~~${type}~~ => ${currentAgenda[date].cours[i].content.type}\n> - ~~${modality}~~ => ${currentAgenda[date].cours[i].content.modality}\n> - ~~${teacher}~~ => ${currentAgenda[date].cours[i].content.teacher}`
-										scheduleChannel.send(sentence)
-									}
-									else{
-
-										if (currentAgenda[date].cours[i].content.time != previousAgenda[date].cours[i].content.time){
-											time = `~~${time}~~ => ${currentAgenda[date].cours[i].content.time}`
-											sentence_ok = 'True'
-										}
-
-										if (currentAgenda[date].cours[i].content.type != previousAgenda[date].cours[i].content.type){
-											type = `~~${type}~~ => ${currentAgenda[date].cours[i].content.type}`
-											sentence_ok = 'True'
-										}
-							
-										if (currentAgenda[date].cours[i].content.modality != previousAgenda[date].cours[i].content.modality){
-											modality = `~~${modality}~~ => ${currentAgenda[date].cours[i].content.modality}`
-											sentence_ok = 'True'
-										}
-							
-										if (currentAgenda[date].cours[i].content.teacher != previousAgenda[date].cours[i].content.teacher){
-											teacher = `~~${teacher}~~ => ${currentAgenda[date].cours[i].content.teacher}`
-											sentence_ok = 'True'
-										}
-
-										if (sentence_ok == 'True'){
-											sentence = `# Lesson updated on ${date}\n<@&${file.groupToPing}>\n> - ${time}\n> - ${name}\n> - ${type}\n> - ${modality}\n> - ${teacher}`
+										if (currentAgenda[date].cours[i].content.name != previousAgenda[date].cours[i].content.name){
+											sentence = `# /!\\ A lesson change on ${date} !\n<@&${file.groupToPing}>\n> - ~~${time}~~ => ${currentAgenda[date].cours[i].time}\n> - ~~${name}~~ => ${currentAgenda[date].cours[i].content.name}\n> - ~~${type}~~ => ${currentAgenda[date].cours[i].content.type}\n> - ~~${modality}~~ => ${currentAgenda[date].cours[i].content.modality}\n> - ~~${teacher}~~ => ${currentAgenda[date].cours[i].content.teacher}`
 											scheduleChannel.send(sentence)
-											sentence_ok = 'False'
-											sentence_ok_2 = 'True'
+										}
+										else{
+
+											if (currentAgenda[date].cours[i].content.time != previousAgenda[date].cours[i].content.time){
+												time = `~~${time}~~ => ${currentAgenda[date].cours[i].content.time}`
+												sentence_ok = 'True'
+											}
+
+											if (currentAgenda[date].cours[i].content.type != previousAgenda[date].cours[i].content.type){
+												type = `~~${type}~~ => ${currentAgenda[date].cours[i].content.type}`
+												sentence_ok = 'True'
+											}
+								
+											if (currentAgenda[date].cours[i].content.modality != previousAgenda[date].cours[i].content.modality){
+												modality = `~~${modality}~~ => ${currentAgenda[date].cours[i].content.modality}`
+												sentence_ok = 'True'
+											}
+								
+											if (currentAgenda[date].cours[i].content.teacher != previousAgenda[date].cours[i].content.teacher){
+												teacher = `~~${teacher}~~ => ${currentAgenda[date].cours[i].content.teacher}`
+												sentence_ok = 'True'
+											}
+
+											if (sentence_ok == 'True'){
+												sentence = `# Lesson updated on ${date}\n<@&${file.groupToPing}>\n> - ${time}\n> - ${name}\n> - ${type}\n> - ${modality}\n> - ${teacher}`
+												scheduleChannel.send(sentence)
+												sentence_ok = 'False'
+												sentence_ok_2 = 'True'
+											}
 										}
 									}
-								}
-								catch{
-									if ( JSON.stringify(currentAgenda[date].cours[i]) !== JSON.stringify(previousAgenda[date].cours[i]) ){
+									catch{
+										if ( JSON.stringify(currentAgenda[date].cours[i]) !== JSON.stringify(previousAgenda[date].cours[i]) ){
 
-										let name = currentAgenda[date].cours[i].content.name
-										let time = currentAgenda[date].cours[i].content.time
-										log(`Creating message for ${name} on ${date} at ${time}`)
-										let type = currentAgenda[date].cours[i].content.type
-										let modality = currentAgenda[date].cours[i].content.modality
-										let teacher = currentAgenda[date].cours[i].content.teacher
+											let name = currentAgenda[date].cours[i].content.name
+											let time = currentAgenda[date].cours[i].content.time
+											log(`Creating message for ${name} on ${date} at ${time}`)
+											let type = currentAgenda[date].cours[i].content.type
+											let modality = currentAgenda[date].cours[i].content.modality
+											let teacher = currentAgenda[date].cours[i].content.teacher
 
-										scheduleChannel.send(`# Shedule changed ! New lesson added on **${date}**\n<@&${file.groupToPing}>\nYou have a new lesson on **${date}** at **${time}**\n> - Day : ${date}\n> - Time : ${time}\n> - ${type} : ${name}\n> - Modality : ${modality}\n> - Teacher : ${teacher}`)
+											scheduleChannel.send(`# Shedule changed ! New lesson added on **${date}**\n<@&${file.groupToPing}>\nYou have a new lesson on **${date}** at **${time}**\n> - Day : ${date}\n> - Time : ${time}\n> - ${type} : ${name}\n> - Modality : ${modality}\n> - Teacher : ${teacher}`)
+										}
 									}
 								}
 							}
@@ -421,7 +429,7 @@ export async function printAgenda(client, currentAgenda, file, user){
 	}
 	else{
 		log(`Impossible to read ${classes}_agenda.json file, or retrieve currentAgenda...`)
-		errorChannel.send(`Impossible to read ${classesd}_agenda.json file, or retrieve currentAgenda...`)
+		errorChannel.send(`Impossible to read ${classes}_agenda.json file, or retrieve currentAgenda...`)
 		
 	}
 

@@ -2,17 +2,18 @@ import * as userFunct from './userFunct.js'
 import * as gFunct from './globalFunct.js'
 import { log } from './globalFunct.js'
 import config from '../config.json' assert {type: 'json'}
+import { DefaultUserAgent } from 'discord.js';
 
 export async function retrieveMyGesData(client){
 
     // Create the current date
     var today = new Date();
 	today.setHours(0, 0, 0)
-    var weekNumber = today.getWeek();
+	const week = gFunct.getWeek(today)
 	var monday = gFunct.getWeekMonday()
 	var saturday = gFunct.getWeekSaturday()
 
-	log('Retrieve myges data..')
+	log('Begin to connect users and retrieve myges data..')
 	const discordClient = client
 	const errorChannel = discordClient.channels.cache.get(config.errorChannel)
 	const scheduleChannel = discordClient.channels.cache.get(config.scheduleChannelId)
@@ -40,6 +41,9 @@ export async function retrieveMyGesData(client){
 				// try{
 					// Request the agenda and write it in userId_agenda.json
 					const agenda = await userFunct.Agenda(user, monday, saturday, userId)
+					// const agenda = await userFunct.Agenda(user, '22-10-2023', '27-10-2023', userId)
+					// console.log(agenda)
+					process.exit()
 					// print agenda if changed...
 					await userFunct.printAgenda(client, agenda, file, user)
 				// }
