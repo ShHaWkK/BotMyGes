@@ -156,13 +156,13 @@ export async function Agenda(user, startD, endD){
 
 // Get the current agenda and parse it into a sentence to print it in discord
 // Usefull when the old agenda don't exit, and each saturday...
-export async function rappelWeeklyAgenda(currentAgenda, optionnalSentence = ''){
+export async function rappelWeeklyAgenda(currentAgenda, file, optionnalSentence = ''){
 
 	try{
-		let sentence = `# Your weekly schedule ${optionnalSentence} :\n`
+		let sentence = `# Your weekly schedule ${optionnalSentence} :\n<@&${file.groupToPing}>\n`
 		for (var date in currentAgenda){
 			let cours = currentAgenda[date].cours;
-			sentence = sentence+`## ${date}\n`
+			sentence = sentence+`## --------${date}--------\n`
 			for (let i = 0; i < cours.length; i++) {
 				let name = currentAgenda[date].cours[i].content.name
 				let time = currentAgenda[date].cours[i].content.time
@@ -233,17 +233,16 @@ export async function printAgenda(client, currentAgenda, file, user){
 	classes = `${classes[0].promotion} - ${classes[0].name}`
 
 	//                                  IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
-	// console.log(today, saturday)
+
 	if (today >= saturday){
 		let hour = today.getHours();
 		let minute = today.getMinutes()
 
-		if (typeof(currentAgenda) !== 'string' && hour === 17 || hour === 18 && minute <= 14){
+		if (typeof(currentAgenda) !== 'string' && hour === 14 || hour === 18 && minute <= 14){
 			await gFunct.writeJsonFile('./users/agenda', `${classes}_agenda`, currentAgenda)
-			const sentence = await rappelWeeklyAgenda(currentAgenda, "for the next week")
+			const sentence = await rappelWeeklyAgenda(currentAgenda, file, "for the next week")
 			scheduleChannel.send(sentence)
-			console.log('OUÉ !!!!!!')
-			process.exit()
+			return
 		}
 
 	}
@@ -435,7 +434,7 @@ export async function printAgenda(client, currentAgenda, file, user){
 	// If the old file don't exist, it's like it's a weelklyAgenda
 	else if(previousAgenda == 'Error' && typeof(currentAgenda) !== 'string'){
 		log('Parse and print the agenda for the week')
-		let resultats = await rappelWeeklyAgenda(currentAgenda)
+		let resultats = await rappelWeeklyAgenda(currentAgenda, file)
 		scheduleChannel.send(resultats)
 	}
 	else{
