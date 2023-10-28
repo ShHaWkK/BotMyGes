@@ -51,15 +51,22 @@ export async function retrieveMyGesData(client){
 						monday.setHours(20,0,0,0)
 						monday.setDate(monday.getDate() + 7);
 			
-						console.log(saturday)
+						// console.log(saturday)
 						saturday.setDate(saturday.getDate() + 7);
 				
 						console.log(monday, saturday);
 					}
-					// process.exit()
+
+					// Reworked the date into string with yyyy-mm-dd form
+					monday = monday.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' }).split('/')
+					saturday = saturday.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' }).split('/')
+					monday = `${monday[2]}-${monday[0]}-${monday[1]}`
+					saturday = `${saturday[2]}-${saturday[0]}-${saturday[1]}`
+					console.log(monday, saturday)
+
 					// Request the agenda and write it in userId_agenda.json
-					const agenda = await userFunct.Agenda(user, monday, saturday, userId)
-					console.log(agenda)
+					// const agenda = await userFunct.Agenda(user, monday, saturday, userId)
+					// console.log(agenda)
 					process.exit()
 					// print agenda if changed...
 					await userFunct.printAgenda(client, agenda, file, user)
