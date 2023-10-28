@@ -63,6 +63,10 @@ export async function Agenda(user, startD, endD){
 
 	// Agenda have a lot unsorted objects inside
 	let agenda = await user.getAgenda(startD, endD)
+
+	if (agenda.length == 0){
+		return 'No agenda for this week'
+	}
 	
 
 	log('Creating Agenda array')
@@ -208,42 +212,40 @@ export async function rappelDailyAgenda(currentAgenda){
 // ---------------------------------------------------------------------
 
 export async function printAgenda(client, currentAgenda, file, user){
+
+	if(typeof(currentAgenda) === 'string'){
+		log(`ERROR : ${currentAgenda}`)
+		errorChannel.send(`ERROR : ${currentAgenda}`)
+		return
+	}
 	
 	let scheduleChannel = client.channels.cache.get(config.scheduleChannelId)
 	let errorChannel = client.channels.cache.get(config.errorChannel)
 
 	// let timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 	let today = new Date()
+	let saturday = gFunct.getWeekSaturday()
+	saturday.setUTCHours(0,0,0,0)
 
 	// Take the name of the classe (promotion + name)
 	log('Request class')
 	let classes = await getClasses(user, today.getFullYear())
 	classes = `${classes[0].promotion} - ${classes[0].name}`
 
-	log("Compare if today it's saturday")
-	var saturday = new Date(gFunct.getWeekSaturday());
-	// If I set 0 to hours, saturday it set to saturday 22h :/
-	saturday.setHours(-20, 0, 0, 0);
-
-	console.log('today', today);
-	console.log('samedi', saturday)
-
+	//                                  IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
+	// console.log(today, saturday)
 	if (today >= saturday){
-		log(`It's Saturday, requesting next week schedule`)
-		let monday = gFunct.getWeekMonday()
-		monday.setDate(monday.getDate() + 7);
+		let hour = today.getHours();
+		let minute = today.getMinutes()
 
-		let saturday = gFunct.getWeekSaturday()
-		saturday.setDate(saturday.getDate() + 7);
+		if (typeof(currentAgenda) !== 'string' && hour === 17 || hour === 18 && minute <= 14){
+			await gFunct.writeJsonFile('./users/agenda', `${classes}_agenda`, currentAgenda)
+			const sentence = await rappelWeeklyAgenda(currentAgenda, "for the next week")
+			scheduleChannel.send(sentence)
+			console.log('OUÉ !!!!!!')
+			process.exit()
+		}
 
-		console.log(monday, saturday);
-		// process.exit()
-
-		let agenda = await Agenda(user, monday, saturday)
-		let sentence = await rappelWeeklyAgenda(agenda, 'for the next week')
-		scheduleChannel.send(sentence)
-		process.exit()
-		return
 	}
 	else{
 		console.log('PAS OUÉÉÉÉÉÉÉÉÉÉ')
@@ -256,7 +258,7 @@ export async function printAgenda(client, currentAgenda, file, user){
 	// Try to read the json file
 	let previousAgenda = await readJsonFile(`./users/agenda/${classes}_agenda.json`)
 
-	if (previousAgenda != 'Error' && currentAgenda !='Error'){
+	if (previousAgenda != 'Error' && typeof(currentAgenda) !== 'string'){
 
 		// try{
 
@@ -411,14 +413,15 @@ export async function printAgenda(client, currentAgenda, file, user){
 								let modality = agendaToWorkWith[date].cours[i].content.modality
 								let teacher = agendaToWorkWith[date].cours[i].content.teacher
 
-								sentence += `> - Time : ${time}\n> - ${type} : ${name}\n> - Modality : ${modality}\n> - Teacher : ${teacher}\n\n`
+								sentence += `> - Date : ${date}\n> - Time : ${time}\n> - ${type} : ${name}\n> - Modality : ${modality}\n> - Teacher : ${teacher}\n\n`
 							}
 						}
 				}
 
 				const dateObj = new Date(realDate.split('/')[2], realDate.split('/')[1] - 1, realDate.split('/')[0]);
 				if (dateObj.getTime() >= today.getTime()) {
-					scheduleChannel.send(`# A day with lesson(s) ${additionalInfos} on **${realDate}**\n<@&${file.groupToPing}>\n${sentence}`)
+					// scheduleChannel.send(`# A day with lesson(s) ${additionalInfos} on **${realDate}**\n<@&${file.groupToPing}>\n${sentence}`)
+					scheduleChannel.send(`# A day with lesson(s) ${additionalInfos}\n<@&${file.groupToPing}>\n${sentence}`)
 				}
 
 			}
@@ -430,7 +433,7 @@ export async function printAgenda(client, currentAgenda, file, user){
 		// }
 	}
 	// If the old file don't exist, it's like it's a weelklyAgenda
-	else if(previousAgenda == 'Error' && currentAgenda != 'Error'){
+	else if(previousAgenda == 'Error' && typeof(currentAgenda) !== 'string'){
 		log('Parse and print the agenda for the week')
 		let resultats = await rappelWeeklyAgenda(currentAgenda)
 		scheduleChannel.send(resultats)
@@ -441,12 +444,12 @@ export async function printAgenda(client, currentAgenda, file, user){
 		
 	}
 
-	if (currentAgenda != 'Error'){
+	if (typeof(currentAgenda) !== 'string'){
 		// Overwrite the file with the new schedule
 		await gFunct.writeJsonFile('./users/agenda', `${classes}_agenda`, currentAgenda)
 	}
 	else{
-		log(`ERROR "currentAgenda = error" cannot create or overwrite ${classes}_agenda.json`)
+		log(`ERROR "currentAgenda = error" cannot create or overwrite ${classes}_agenda.json, ${currentAgenda}`)
 	}
 }
 
@@ -528,6 +531,12 @@ export async function Absences(user, userId, date){
 
 export async function printAbsences(client, absences, file){
 
+	if(typeof(absences) === 'string'){
+		log(`${absences}`)
+		errorChannel.send(absences)
+		return
+	}
+
 	log('Compare old absences with current absences')
 
 	let scheduleChannel = client.channels.cache.get(config.scheduleChannelId)
@@ -538,7 +547,7 @@ export async function printAbsences(client, absences, file){
 	const old_absences = await readJsonFile(`./users/absences/${file.userId}_absences.json`)
 
 	// Compare current datas with already stored datas
-	if (old_absences != 'Error' && absences != 'Error') {
+	if (old_absences != 'Error' && typeof(absences) !== 'string') {
 		let hoursMissed = 0
 		let sentence = `You have `
 		let concat = ''
@@ -565,7 +574,7 @@ export async function printAbsences(client, absences, file){
 		
 	}
 	// If the file don't exist
-	else if(old_absences == 'Error' && absences !='Error')
+	else if(old_absences == 'Error' && typeof(absences) !== 'string')
 	{
 		// Inform the user the number of absence if have one or more
 		console.log(absences)
@@ -593,13 +602,13 @@ export async function printAbsences(client, absences, file){
 		// userMessageChannel.send('Error when retrieve your absences')
 	}
 
-	if (absences != 'Error'){
+	if (typeof(absences) !== 'string'){
 		// Then create a file with absences
 		log('Writing absences file')
 		await gFunct.writeJsonFile('./users/absences', `${file.userId}_absences`, absences)
 	}
 	else{
-		log(`No absences datas for ${file.username}`)
+		log(`ERROR : ${absences}, or no absences datas for ${file.username}`)
 	}
 
 
