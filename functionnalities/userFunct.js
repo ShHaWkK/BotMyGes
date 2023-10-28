@@ -183,28 +183,35 @@ export async function rappelWeeklyAgenda(currentAgenda, file, optionnalSentence 
 
 // ---------------------------------------------------------------------
 
-export async function rappelDailyAgenda(currentAgenda){
+export async function rappelTomorrowAgenda(currentAgenda, file){
 
 	try{
 		var date = new Date();
+		date.setUTCHours(0,0,0,0)
+		date.setDate(date.getDate() - 1);
 		date = date.toLocaleDateString()
 
-		let sentence = `# Your daily schedule for ${date} :\n`
-		let cours = currentAgenda[date].cours;
-		sentence = sentence+`## ${date}\n`
-		for (let i = 0; i < cours.length; i++) {
-			let name = currentAgenda[date].cours[i].content.name
-			let time = currentAgenda[date].cours[i].content.time
-			let type = currentAgenda[date].cours[i].content.type
-			let modality = currentAgenda[date].cours[i].content.modality
-			let teacher = currentAgenda[date].cours[i].content.teacher
-			var miniSentence = `> - **	${time}**\n>  - ${type} : __${name}__\n>  - Modality : ${modality}\n>  - Teacher : ${teacher}\n\n`
-			sentence = sentence+miniSentence
+		let sentence = `# Your daily schedule for ${date} :\n<@&${file.groupToPing}>\n`
+		
+		if (currentAgenda[date]?.cours){
+			let cours = currentAgenda[date].cours
+			for (let i = 0; i < cours.length; i++) {
+				let name = currentAgenda[date].cours[i].content.name
+				let time = currentAgenda[date].cours[i].content.time
+				let type = currentAgenda[date].cours[i].content.type
+				let modality = currentAgenda[date].cours[i].content.modality
+				let teacher = currentAgenda[date].cours[i].content.teacher
+				var miniSentence = `> - **	${time}**\n>  - ${type} : __${name}__\n>  - Modality : ${modality}\n>  - Teacher : ${teacher}\n\n`
+				sentence = sentence+miniSentence
+			}
+		}
+		else{
+			return 'No daily schedule'
 		}
 
 		return sentence
 	}
-	catch{
+	catch (error){
 		return 'No daily schedule'
 	}
 }
@@ -212,33 +219,36 @@ export async function rappelDailyAgenda(currentAgenda){
 // ---------------------------------------------------------------------
 
 export async function printAgenda(client, currentAgenda, file, user){
+	
+	let scheduleChannel = client.channels.cache.get(config.scheduleChannelId)
+	let errorChannel = client.channels.cache.get(config.errorChannel)
 
 	if(typeof(currentAgenda) === 'string'){
 		log(`ERROR : ${currentAgenda}`)
 		errorChannel.send(`ERROR : ${currentAgenda}`)
 		return
 	}
-	
-	let scheduleChannel = client.channels.cache.get(config.scheduleChannelId)
-	let errorChannel = client.channels.cache.get(config.errorChannel)
 
 	// let timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 	let today = new Date()
 	let saturday = gFunct.getWeekSaturday()
 	saturday.setUTCHours(0,0,0,0)
+	// Get sunday
+	saturday.setDate(saturday.getDate() + 1);
 
 	// Take the name of the classe (promotion + name)
 	log('Request class')
 	let classes = await getClasses(user, today.getFullYear())
 	classes = `${classes[0].promotion} - ${classes[0].name}`
 
-	//                                  IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
+	let hour = today.getHours();
+	let minute = today.getMinutes()
 
+	// If today > sunday of the same week
 	if (today >= saturday){
-		let hour = today.getHours();
-		let minute = today.getMinutes()
+		
 
-		if (typeof(currentAgenda) !== 'string' && hour === 14 || hour === 18 && minute <= 14){
+		if (hour === 17 || hour === 18 && minute <= 14){
 			await gFunct.writeJsonFile('./users/agenda', `${classes}_agenda`, currentAgenda)
 			const sentence = await rappelWeeklyAgenda(currentAgenda, file, "for the next week")
 			scheduleChannel.send(sentence)
@@ -247,11 +257,13 @@ export async function printAgenda(client, currentAgenda, file, user){
 
 	}
 	else{
-		console.log('PAS OUÉÉÉÉÉÉÉÉÉÉ')
-		process.exit()
+		if (hour === 17 || hour === 18 && minute <= 14){
+			const sentence = await rappelTomorrowAgenda(currentAgenda, file)
+			scheduleChannel.send(sentence)
+			return
+	
+		}
 	}
-
-	// console.log(currentAgenda)
 	
 
 	// Try to read the json file

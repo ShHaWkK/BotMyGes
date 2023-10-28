@@ -46,11 +46,11 @@ export async function retrieveMyGesData(client){
 						log(`It's Saturday today, requesting next week schedule`)
 
 						monday.setUTCHours(0,0,0,0)
-						monday.setDate(monday.getDate() + 14);
+						monday.setDate(monday.getDate())// + 14);
 						monday.setUTCHours(0,0,0,0)
 			
 						// console.log(saturday)
-						saturday.setDate(saturday.getDate() + 14);
+						saturday.setDate(saturday.getDate())// + 14);
 				
 					}
 					console.log(monday, saturday)
