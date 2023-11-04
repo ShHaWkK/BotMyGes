@@ -1,7 +1,7 @@
 In progress :
 - /rappel (Alexandre)
+- /register (Marc)
 
 To do :
 - /help
-- /rappel (create rappel for controls / evaluations)
-- /register
+- /setUp (permettra de paramétrer le scheduleChannel et le errorChannel)

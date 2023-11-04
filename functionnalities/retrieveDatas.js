@@ -43,14 +43,14 @@ export async function retrieveMyGesData(client){
 
 					// Compare date to request the weekly scheldule or the next weekly schedule
 					if (today >= saturday){
-						log(`It's Saturday today, requesting next week schedule`)
+						log(`It's the weekend today, requesting next week schedule (print it if it's sunday)`)
 
 						monday.setUTCHours(0,0,0,0)
-						monday.setDate(monday.getDate())// + 14);
+						monday.setDate(monday.getDate() + 7);
 						monday.setUTCHours(0,0,0,0)
 			
 						// console.log(saturday)
-						saturday.setDate(saturday.getDate())// + 14);
+						saturday.setDate(saturday.getDate() + 7);
 				
 					}
 					console.log(monday, saturday)

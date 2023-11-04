@@ -65,7 +65,7 @@ export async function Agenda(user, startD, endD){
 	let agenda = await user.getAgenda(startD, endD)
 
 	if (agenda.length == 0){
-		return 'No agenda for this week'
+		return `No agenda for this week : ${startD, endD}`
 	}
 	
 
@@ -246,7 +246,6 @@ export async function printAgenda(client, currentAgenda, file, user){
 
 	// If today > sunday of the same week
 	if (today >= saturday){
-		
 
 		if (hour === 17 || hour === 18 && minute <= 14){
 			await gFunct.writeJsonFile('./users/agenda', `${classes}_agenda`, currentAgenda)
