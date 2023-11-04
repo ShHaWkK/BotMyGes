@@ -43,7 +43,7 @@ export async function retrieveMyGesData(client){
 
 					// Compare date to request the weekly scheldule or the next weekly schedule
 					if (today >= saturday){
-						log(`It's the weekend today, requesting next week schedule (print it if it's sunday)`)
+						log(`It's the weekend today, requesting next week schedule (print it, if it's sunday)`)
 
 						monday.setUTCHours(0,0,0,0)
 						monday.setDate(monday.getDate() + 7);
@@ -56,11 +56,12 @@ export async function retrieveMyGesData(client){
 					console.log(monday, saturday)
 					// Request the agenda
 					const agenda = await userFunct.Agenda(user, monday, saturday, userId)
-					// Write in [groupClasseName]_agenda.json and print agenda on disocord if changed...
+
+					// Write in [groupClasseName]_agenda.json and print agenda on discord if changed...
 					await userFunct.printAgenda(client, agenda, file, user)
 				// }
-				// catch (error){
-				// 	log(`Error when trying to fetch the schedule for ${login}, ${error}`)
+				// catch{
+				// 	log(`Error when trying to fetch the schedule for ${login}`)
 				// 	errorChannel.send(`Error when trying to fetch the schedule for ${login}`)
 				// }
 

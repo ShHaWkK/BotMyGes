@@ -156,10 +156,41 @@ export async function Agenda(user, startD, endD){
 
 // Get the current agenda and parse it into a sentence to print it in discord
 // Usefull when the old agenda don't exit, and each saturday...
-export async function rappelWeeklyAgenda(currentAgenda, file, optionnalSentence = ''){
-
+export async function rappelWeeklyAgenda(client, currentAgenda, classes, optionnalSentence = ''){
 	try{
-		let sentence = `# Your weekly schedule ${optionnalSentence} :\n<@&${file.groupToPing}>\n`
+		try {
+
+			// List all the guild of the bot
+			let guildsId = await client.guilds.cache;
+
+			let guildData
+			guildsId.forEach(guild => {
+				if (guild.id == config.guildId){
+					guildData =  guild
+					return
+					
+				}					
+				});
+			
+			var groupToPing = "Meh"
+			guildData.roles.cache.forEach(role => {
+				if (role.name == classes){
+					groupToPing = role.id
+					return
+				}
+				});
+			if (groupToPing == "Meh"){
+				groupToPing = "Cannot find the role corresponding to the classes :("
+			}
+
+
+		}
+		catch (error)
+		{
+			console.error(error);
+		}
+
+		let sentence = `# Your weekly schedule ${optionnalSentence} :\n<@&${groupToPing}>\n`
 		for (var date in currentAgenda){
 			let cours = currentAgenda[date].cours;
 			sentence = sentence+`## --------${date}--------\n`
@@ -177,6 +208,7 @@ export async function rappelWeeklyAgenda(currentAgenda, file, optionnalSentence 
 		return sentence
 	}
 	catch{
+		log('ERROR : Error in "rappelWeeklyAgenda()" function')
 		return 'No weekly schedule'
 	}
 }
@@ -239,7 +271,7 @@ export async function printAgenda(client, currentAgenda, file, user){
 	// Take the name of the classe (promotion + name)
 	log('Request class')
 	let classes = await getClasses(user, today.getFullYear())
-	classes = `${classes[0].promotion} - ${classes[0].name}`
+	classes = `${classes[0].promotion.split('ESGI').join('')}${classes[0].name.split(' ')[1]}`
 
 	let hour = today.getHours();
 	let minute = today.getMinutes()
@@ -249,7 +281,7 @@ export async function printAgenda(client, currentAgenda, file, user){
 
 		if (hour === 17 || hour === 18 && minute <= 14){
 			await gFunct.writeJsonFile('./users/agenda', `${classes}_agenda`, currentAgenda)
-			const sentence = await rappelWeeklyAgenda(currentAgenda, file, "for the next week")
+			const sentence = await rappelWeeklyAgenda(client, currentAgenda, classes, "for the next week")
 			scheduleChannel.send(sentence)
 			return
 		}
@@ -445,7 +477,7 @@ export async function printAgenda(client, currentAgenda, file, user){
 	// If the old file don't exist, it's like it's a weelklyAgenda
 	else if(previousAgenda == 'Error' && typeof(currentAgenda) !== 'string'){
 		log('Parse and print the agenda for the week')
-		let resultats = await rappelWeeklyAgenda(currentAgenda, file)
+		let resultats = await rappelWeeklyAgenda(client, currentAgenda, classes)
 		scheduleChannel.send(resultats)
 	}
 	else{
