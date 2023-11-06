@@ -182,17 +182,13 @@ export async function rappelWeeklyAgenda(client, currentAgenda, classes, optionn
 				}					
 				});
 			
-			var groupToPing = "Meh"
+			var groupToPing = "Cannot find the role corresponding to the classes :("
 			guildData.roles.cache.forEach(role => {
 				if (role.name == classes){
 					groupToPing = role.id
 					return
 				}
 				});
-			if (groupToPing == "Meh"){
-				groupToPing = "Cannot find the role corresponding to the classes :("
-			}
-
 
 		}
 		catch (error)

@@ -6,7 +6,8 @@ import { DefaultUserAgent } from 'discord.js';
 
 export async function retrieveMyGesData(client){
 
-	log('Begin to connect users and retrieve myges data..')
+	log('Checking begin')
+	log('Connect users and retrieve myges data..')
 	const discordClient = client
 	const errorChannel = discordClient.channels.cache.get(config.errorChannel)
 	const scheduleChannel = discordClient.channels.cache.get(config.scheduleChannelId)
@@ -70,7 +71,7 @@ export async function retrieveMyGesData(client){
 					// Retrieve grades
 					const grades = await userFunct.Grades(user, userId, today)
 					// Print grades
-					userFunct.printGrades(client, grades, file)
+					await userFunct.printGrades(client, grades, file)
 				}
 				catch (error){
 					log(`Error when trying to retrieve grades for ${login}, ${error}`)
@@ -81,7 +82,7 @@ export async function retrieveMyGesData(client){
 					// Retrieve absences
 					const absences = await userFunct.Absences(user, userId, today)
 					// Print absences
-					userFunct.printAbsences(client, absences, file)
+					await userFunct.printAbsences(client, absences, file)
 				}
 				catch (error){
 					log(`Error when trying to retrieve new absences for ${login}, ${error}`)
@@ -102,4 +103,5 @@ export async function retrieveMyGesData(client){
 	else{
 		log(`No users registered, please type "/register mygesLogin mygesPassword" to begin the check`)
 	}
+	log('Wainting 1 hour before the next check')
 }
