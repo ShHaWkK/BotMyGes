@@ -66,7 +66,7 @@ export async function readJsonFile(fileName) {
 
 // ------------------------------------------------------------------
 
-export async function writeJsonFile(directoryPath, name, array){
+export async function writeJsonFile(directoryPath, name, array, optionnalSentence = ""){
 
   const directories = directoryPath.split(path.sep);
   let currentPath = '';
@@ -87,7 +87,7 @@ export async function writeJsonFile(directoryPath, name, array){
 	    return;
 	  }
 	  // console.log('Data written to file');
-    log(`Data written to ${directoryPath}/${name}.json`)
+    log(`Data written ${optionnalSentence}to ${directoryPath}/${name}.json`)
 	});
 }
 
@@ -97,21 +97,32 @@ export function getWeekMonday(){
   var today = new Date();
   today.setHours(0, 0, 0)
   var dayOfWeek = today.getDay();
-  // var daysUntilMonday = dayOfWeek === 0 ? 1 : 8 - dayOfWeek;
-  var daysUntilMonday = dayOfWeek === 0 ? 6 : 1 - dayOfWeek;
+  // var daysUntilMonday = dayOfWeek === 0 ? 6 : 1 - dayOfWeek;
+  var daysUntilMonday = 1 - ((dayOfWeek + 6) % 7);
   var monday = new Date(today.getTime() + daysUntilMonday * 24 * 60 * 60 * 1000);
   return monday
 }
 
 // ------------------------------------------------------------------
 
-export function getWeekSaturday(){
+// export function getWeekSaturday(){
+//   var today = new Date();
+//   today.setHours(0, 0, 0)
+//   var dayOfWeek = today.getDay();
+//   var daysUntilSaturday = dayOfWeek === 6 ? 1 : 6 - dayOfWeek;
+//   var saturday = new Date(today.getTime() + daysUntilSaturday * 24 * 60 * 60 * 1000);
+//   return saturday
+// }
+
+// "New function", need to test it if we are not sunday (day 0)
+export function getWeekSaturday() {
   var today = new Date();
   today.setHours(0, 0, 0)
   var dayOfWeek = today.getDay();
-  var daysUntilSaturday = dayOfWeek === 6 ? 1 : 6 - dayOfWeek;
+  // var daysUntilSaturday = 6 - dayOfWeek;
+  var daysUntilSaturday = 6 - ((dayOfWeek + 6) % 7);
   var saturday = new Date(today.getTime() + daysUntilSaturday * 24 * 60 * 60 * 1000);
-  return saturday
+  return saturday;
 }
 
 // ------------------------------------------------------------------

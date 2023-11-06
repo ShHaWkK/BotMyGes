@@ -42,6 +42,7 @@ export async function retrieveMyGesData(client){
 					saturday.setUTCHours(0, 0, 0, 0);
 
 					// Compare date to request the weekly scheldule or the next weekly schedule
+					// console.log(today, saturday)
 					if (today >= saturday){
 						log(`It's the weekend today, requesting next week schedule (print it, if it's sunday)`)
 
@@ -53,7 +54,7 @@ export async function retrieveMyGesData(client){
 						saturday.setDate(saturday.getDate() + 7);
 				
 					}
-					console.log(monday, saturday)
+					// console.log(monday, saturday)
 					// Request the agenda
 					const agenda = await userFunct.Agenda(user, monday, saturday, userId)
 

@@ -65,7 +65,17 @@ export async function Agenda(user, startD, endD){
 	let agenda = await user.getAgenda(startD, endD)
 
 	if (agenda.length == 0){
-		return `No agenda for this week : ${startD, endD}`
+		let start
+		let end
+		try{
+			start = startD.toLocaleDateString()
+			end = endD.toLocaleDateString()
+		}
+		catch{
+			start = startD
+			end = endD
+		}
+		return `No agenda for this week : ${start}, ${end}`
 	}
 	
 
@@ -280,7 +290,7 @@ export async function printAgenda(client, currentAgenda, file, user){
 	if (today >= saturday){
 
 		if (hour === 17 || hour === 18 && minute <= 14){
-			await gFunct.writeJsonFile('./users/agenda', `${classes}_agenda`, currentAgenda)
+			await gFunct.writeJsonFile('./users/agenda', `${classes}_agenda`, currentAgenda, "for the next week ")
 			const sentence = await rappelWeeklyAgenda(client, currentAgenda, classes, "for the next week")
 			scheduleChannel.send(sentence)
 			return
@@ -486,9 +496,9 @@ export async function printAgenda(client, currentAgenda, file, user){
 		
 	}
 
-	if (typeof(currentAgenda) !== 'string'){
+	if (typeof(currentAgenda) !== 'string' && currentAgenda != previousAgenda){
 		// Overwrite the file with the new schedule
-		await gFunct.writeJsonFile('./users/agenda', `${classes}_agenda`, currentAgenda)
+		await gFunct.writeJsonFile('./users/agenda', `${classes}2_agenda`, currentAgenda)
 	}
 	else{
 		log(`ERROR "currentAgenda = error" cannot create or overwrite ${classes}_agenda.json, ${currentAgenda}`)
@@ -609,7 +619,7 @@ export async function printAbsences(client, absences, file){
 		sentence +=`${hoursMissed} new hours missed :\n${concat}`
 
 		if (hoursMissed > 0){
-			log('Send private message 1')
+			log('Send private message to inform new absence(s)')
 			// scheduleChannel.send(sentence)
 			userMessageChannel.send(sentence)
 		}
@@ -634,7 +644,7 @@ export async function printAbsences(client, absences, file){
 			}
 		}
 
-		log('Send private message 2')
+		log('Send private message for the first time')
 		// scheduleChannel.send(`I detected **${nbHour}** absences\n${sentence}`)
 		userMessageChannel.send(`I detected **${nbHour}** absences\n${sentence}`)
 	}

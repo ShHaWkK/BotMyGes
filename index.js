@@ -39,14 +39,17 @@ function main(){
 	client.on('ready', () => {
 		log(`${client.user.username} has logged in, waiting...`)
 		client.user.setActivity({
-			name:"Seems like I'm in developpement..."
+			// name:"Seems like I'm in developpement..."
+			name:"Just testing the bot in real condition"
 		})
 
 		client.user.setStatus('dnd');
 
 		// try{
-			// setInterval(retrieveMyGesData(), 900000)
 			retrieveMyGesData(client)
+			setInterval(function(){retrieveMyGesData(client);}, 3600000)
+			// setInterval(function(){recupLatestVideo(client);}, 900000)
+			
 		// }
 		// catch(error){
 		// 	log(error)
