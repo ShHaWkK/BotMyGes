@@ -21,6 +21,7 @@ import { log } from './functionnalities/globalFunct.js'
 
 function main(){
 	//Creating a client
+	log('----------------------------------------------------')
 	log('Creating Client')
 	const client = new Client({ intents: [
 		GatewayIntentBits.Guilds,

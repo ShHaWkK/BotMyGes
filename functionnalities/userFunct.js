@@ -496,9 +496,13 @@ export async function printAgenda(client, currentAgenda, file, user){
 		
 	}
 
-	if (typeof(currentAgenda) !== 'string' && currentAgenda != previousAgenda){
+	if (typeof(currentAgenda) !== 'string' && JSON.stringify(currentAgenda) !== JSON.stringify(previousAgenda)){
 		// Overwrite the file with the new schedule
-		await gFunct.writeJsonFile('./users/agenda', `${classes}2_agenda`, currentAgenda)
+		// Overwrite it if we have english lessons lol
+		await gFunct.writeJsonFile('./users/agenda', `${classes}_agenda`, currentAgenda)
+	}
+	else if(JSON.stringify(currentAgenda) === JSON.stringify(previousAgenda)){
+		log(`No new schedule for ${classes}`)
 	}
 	else{
 		log(`ERROR "currentAgenda = error" cannot create or overwrite ${classes}_agenda.json, ${currentAgenda}`)
@@ -654,13 +658,16 @@ export async function printAbsences(client, absences, file){
 		// userMessageChannel.send('Error when retrieve your absences')
 	}
 
-	if (typeof(absences) !== 'string'){
+	if (typeof(absences) !== 'string' && JSON.stringify(old_absences) !== JSON.stringify(absences)){
 		// Then create a file with absences
 		log('Writing absences file')
 		await gFunct.writeJsonFile('./users/absences', `${file.userId}_absences`, absences)
 	}
-	else{
+	else if (absences == 'string'){
 		log(`ERROR : ${absences}, or no absences datas for ${file.username}`)
+	}
+	else{
+		log(`No new absences for ${file.username}`)
 	}
 
 
