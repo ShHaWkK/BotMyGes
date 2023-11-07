@@ -2,3 +2,4 @@ config.json
 log/log.txt
 users/
 config.json
+node_modules

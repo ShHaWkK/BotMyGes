@@ -1,0 +1,5 @@
+{
+    "name": "rappel",
+    "type": 1,
+    "description": "Set a reminder [date] [description]"
+}

@@ -53,6 +53,23 @@ export async function listJsonFile(Path) {
 
 // ------------------------------------------------------------------
 
+export async function listJsFile(Path)  {
+  // const directoryPath = '../users/';
+	const relativePath = Path
+
+  try {
+    const files = await fs.promises.readdir(relativePath);
+    const jsonFiles = files.filter(file => path.extname(file) === '.js');
+    return jsonFiles;
+  } catch (err) {
+    // console.error('Error reading directory:', err);
+    log(`ERROR : Reading directory ${relativePath}, ${err}`)
+    return 'Error';
+  }
+}
+
+// ------------------------------------------------------------------
+
 export async function readJsonFile(fileName) {
   try {
     const data = fs.readFileSync(fileName, 'utf8');

@@ -250,7 +250,7 @@ export async function rappelTomorrowAgenda(currentAgenda, file){
 		return sentence
 	}
 	catch (error){
-		return 'No daily schedule'
+		return 'ERROR when rappelTomorrowAgenda()'
 	}
 }
 

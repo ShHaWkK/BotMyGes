@@ -6,7 +6,7 @@ import { DefaultUserAgent } from 'discord.js';
 
 export async function retrieveMyGesData(client){
 
-	log('Checking begin')
+	log('Checking myges begin')
 	log('Connect users and retrieve myges data..')
 	const discordClient = client
 	const errorChannel = discordClient.channels.cache.get(config.errorChannel)

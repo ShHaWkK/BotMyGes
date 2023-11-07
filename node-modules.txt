@@ -1,4 +1,4 @@
 In the folder where you downloded the bot, open a terminal :
 npm i node-fetch
-npm i myges
-npm i discord.js
+npm i myges@latest
+npm i discord.js@latest
