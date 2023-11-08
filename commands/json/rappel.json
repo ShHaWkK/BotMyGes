@@ -1,5 +1,25 @@
 {
     "name": "rappel",
     "type": 1,
-    "description": "Set a reminder [date] [description]"
+    "description": "Set a reminder [date] [description]",
+    "options": [
+        {
+          "type": 3,
+          "name": "date",
+          "description": "dd/mm/yyyy",
+          "required": true
+        },
+        {
+          "type": 3,
+          "name": "title",
+          "description": "Add the title of the reminder",
+          "required": true
+        },
+        {
+          "type": 3,
+          "name": "description",
+          "description": "Optionnal description of the reminder",
+          "required": false
+        }
+    ]
 }

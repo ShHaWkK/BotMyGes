@@ -1,5 +1,25 @@
 {
     "name": "set-up",
     "type": 1,
-    "description": "Command for set the schedul channel and the error channel"
+    "description": "Command for set the schedul channel and the error channel",
+    "options": [
+        {
+          "type": 4,
+          "name": "schedule-channel",
+          "description": "ID of the channel for the schedule",
+          "required": true
+        },
+        {
+          "type": 4,
+          "name": "reminder-channel",
+          "description": "ID of the channel for all the reminders",
+          "required": true
+        },
+        {
+          "type": 4,
+          "name": "error-channel",
+          "description": "ID of the channel for potential errors",
+          "required": true
+        }
+    ]
 }

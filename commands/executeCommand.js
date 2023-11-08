@@ -21,7 +21,7 @@ export async function executeSlashCommand(interaction){
 
     if (interaction.commandName === 'blep') {
         // Delete the command
-        await interaction.reply('Command deleted!');
+        await interaction.reply('Command under construction... :(');
     }
       
 };
