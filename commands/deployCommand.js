@@ -31,54 +31,55 @@ export async function deployCommand(client){
                       .setRequired(optionC.required)
               );
               break;
+              
             case 4:
-              // commandData.addIntegerOption(option.name, option.description);
               commandData.addIntegerOption(option =>
                   option.setName(optionC.name)
                       .setDescription(optionC.description)
                       .setRequired(optionC.required)
               );
               break;
+
             case 5:
-              // commandData.addBooleanOption(option.name, option.description);
               commandData.addBooleanOption(option =>
                   option.setName(optionC.name)
                       .setDescription(optionC.description)
                       .setRequired(optionC.required)
               );
               break;
+
             case 6:
-              // commandData.addUserOption(option.name, option.description);
               commandData.addUserOption(option =>
                   option.setName(optionC.name)
                       .setDescription(optionC.description)
                       .setRequired(optionC.required)
               );
               break;
+
             case 7:
-              // commandData.addChannelOption(option.name, option.description);
               commandData.addChannelOption(option =>
                   option.setName(optionC.name)
                       .setDescription(optionC.description)
                       .setRequired(optionC.required)
               );
               break;
+
             case 8:
-              // commandData.addRoleOption(option.name, option.description);
               commandData.addRoleOption(option =>
                   option.setName(optionC.name)
                       .setDescription(optionC.description)
                       .setRequired(optionC.required)
               );
               break;
+
             case 9:
-              // commandData.addMentionableOption(option.name, option.description);
               commandData.addMentionableOption(option =>
                   option.setName(optionC.name)
                       .setDescription(optionC.description)
                       .setRequired(optionC.required)
               );
               break;
+
             default:
               log(`ERROR : Invalid option type for ${option.name} in ${file}`);
               break;
