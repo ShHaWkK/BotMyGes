@@ -54,15 +54,15 @@ function main(){
 		await deployCommand(client)
 		// process.exit()
 
-		try{
+		// try{
 			retrieveMyGesData(client)
 			setInterval(function(){retrieveMyGesData(client);}, 3600000)
 			// setInterval(function(){recupLatestVideo(client);}, 900000)
 			
-		}
-		catch(error){
-			log(error)
-		}
+		// }
+		// catch(error){
+		// 	log(error)
+		// }
     })
 
 	client.on('interactionCreate', async (interaction) => {

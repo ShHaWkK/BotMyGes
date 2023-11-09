@@ -67,16 +67,16 @@ export async function retrieveMyGesData(client){
 				// 	errorChannel.send(`Error when trying to fetch the schedule for ${login}`)
 				// }
 
-				try{
+				// try{
 					// Retrieve grades
 					const grades = await userFunct.Grades(user, userId, today)
 					// Print grades
 					await userFunct.printGrades(client, grades, file)
-				}
-				catch (error){
-					log(`Error when trying to retrieve grades for ${login}, ${error}`)
-					errorChannel.send(`Error when trying to retrieve grades for ${login}`)
-				}				
+				// }
+				// catch (error){
+				// 	log(`Error when trying to retrieve grades for ${login}, ${error}`)
+				// 	errorChannel.send(`Error when trying to retrieve grades for ${login}`)
+				// }				
 
 				try{
 					// Retrieve absences
