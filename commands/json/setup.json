@@ -4,19 +4,19 @@
     "description": "Command for set the schedul channel, the reminder channel and the error channel",
     "options": [
         {
-          "type": 4,
+          "type": 7,
           "name": "schedule-channel",
           "description": "ID of the channel for the schedule",
           "required": true
         },
         {
-          "type": 4,
+          "type": 7,
           "name": "reminder-channel",
           "description": "ID of the channel for all the reminders",
           "required": true
         },
         {
-          "type": 4,
+          "type": 7,
           "name": "error-channel",
           "description": "ID of the channel for potential errors",
           "required": true
