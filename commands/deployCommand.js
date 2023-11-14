@@ -7,6 +7,30 @@ export async function deployCommand(client){
   // Import commands files
   const listFile = await listJsonFile('./commands/json/')
 
+  let tmpArr = []
+  // List all the cmd name in json files
+  for (const file of listFile) {
+    const command = await readJsonFile(`./commands/json/${file}`, 'utf8')
+    if (command != ['Error']){
+      tmpArr.push(command.name)
+    }
+  }
+  // Check if the json files are same as command registered by Discord
+  const listCMD = await client.application.commands.fetch()
+  for (let cmd of listCMD.values()){
+    // console.log(cmd)
+    if(!(tmpArr.includes(cmd.name))){
+      // Delete on discord if the command don't exist in the files
+      try{
+        client.application.commands.cache.find(c => c.name === cmd.name).delete();
+        log(`The command ${cmd.name} has been deleted`)
+      }
+      catch{
+        log(`ERROR : Impossible to delete the command ${cmd.name}`)
+      }
+    }
+  }
+
   // Create slash commands
   let createdCommand = []
   for (const file of listFile) {

@@ -25,6 +25,7 @@ import { log } from './functionnalities/globalFunct.js'
 function main(){
 	//Creating a client
 	log('----------------------------------------------------')
+	log('Starting program')
 	log(`Using discord.js version: ${Discord.version}`);
 	log('Creating Client')
 	const client = new Client({ intents: [
