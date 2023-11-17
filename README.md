@@ -57,5 +57,5 @@ Ce bot sert a se connecter au site internet myges utilisé par les étudiant fra
     1. ```node index.js```
 
 
-### Vous pouvez utiliser une bibliothèque telle que pm2 pour windows afin de démarrer le bot lors du démarrage de votre odinateur, ou host le bot sur un serveur distant.
+### Vous pouvez utiliser une bibliothèque telle que pm2 pour windows afin de démarrer le bot lors du démarrage de votre ordinateur, ou host le bot sur un serveur distant.
  
