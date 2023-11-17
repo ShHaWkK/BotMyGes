@@ -15,18 +15,18 @@ Ce bot sert a se connecter au site internet myges utilisé par les étudiant fra
 
 2. Télécharger Node.js
 
- ``` npm i node.js ```
+    ``` npm i node.js ```
 
 3. Télécharger les modules
- ```npm i myges@4.7.1```
- ```npm i discord.js@14.13.0```
- ```npm i node-fetch@3.3.2```
+    1. ```npm i myges@4.7.1```
+    2. ```npm i discord.js@14.13.0```
+    3. ```npm i node-fetch@3.3.2```
 
 4. Configurer le bot
- Voir __Configurer le bot__
+    1. Voir __Configurer le bot__
 
 5. Run le programme
- ````node index.js``
+    1. ````node index.js``
 
 
 
@@ -39,18 +39,23 @@ Ce bot sert a se connecter au site internet myges utilisé par les étudiant fra
     1. Créer une nouvelle application
     2. Copier le token du bot
 
-2. Activer le mode développeur
+2. Activer le mode développeur sur votre application Discord
     1. Paramètre -> Avancé -> Developpeur Mode
 
 3. Fichier config.json
     1. Rentrer le token du bot dans le fichier config.json au niveau de botToken
-    2. ID du serveur
+    2. Paramétrer les IDs obligatoires
         1. Sur Discord, clique droit sur le serveur et copier son ID (Dev Mode Activé obligatoire)
         2. Coller l'ID dans le fichier config.json pour le guildId
 
     3. Configurer trois channels pour le bot
-        1. errorChannel (clique droit sur le salon -> copier ID) et coller l'ID dans config.json pour errorChannel.
-        2. Répétez ces étapes pour scheduleChanneId et reminderChannel
+        1. Créer un salon (error-channel par exemple)
+        2. clique droit sur le salon nouvellement créé -> copier ID, puis coller l'ID dans config.json (pour errorChannel dans cet exemple).
+        2. Répétez ces étapes pour les champs scheduleChanneId et reminderChannel
 
 4. Vous pouvez désormais utiliser le bot
+    1. ```node index.js```
+
+
+### Vous pouvez utiliser une bibliothèque telle que pm2 pour windows afin de démarrer le bot lors du démarrage de votre odinateur, ou host le bot sur un serveur distant.
  
