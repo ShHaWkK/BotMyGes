@@ -311,18 +311,13 @@ export async function printAgenda(client, currentAgenda, file, user){
 		// try{
 
 			log(`Comparing new to old agenda for ${classes}, ${file.username}`)
-
-			// Need to create it here to detect the student class name
-			var student_group_name = null
 			
 			//Boucle qui permet de parcourir les datas
 			// Reach each content in each dates
 			for (let date in currentAgenda) {
 
-				const dateObj = new Date(date.split('/')[2], date.split('/')[1] - 1, date.split('/')[0]);
-
 				// Only compare comming days
-				if (dateObj.getTime() >= today.getTime()) {
+				if (new Date(date).getTime() >= new Date(today.toLocaleDateString()).getTime()) {
 
 					// If a day exist in the previousAgenda and in the currentAgenda
 					log(`Checking new lessons for ${date}`)
@@ -410,18 +405,18 @@ export async function printAgenda(client, currentAgenda, file, user){
 					else if(date in previousAgenda && previousAgenda[date] && currentAgenda[date].cours.length < previousAgenda[date].cours.length){
 
 						sentence_ok_2 = "True"
-						for (let i = 0; i < previousAgenda[date].cours.length; i++) {
-							// console.log(previousAgenda[date].cours[i])
+						if (previousAgenda[date].cours.length > currentAgenda[date].cours.length){
 
-							if (JSON.stringify(currentAgenda[date].cours[i]) !== JSON.stringify(previousAgenda[date].cours[i])){
-								let name = previousAgenda[date].cours[i].content.name
-								let time = previousAgenda[date].cours[i].content.time
-								let type = previousAgenda[date].cours[i].content.type
-								let modality = previousAgenda[date].cours[i].content.modality
-								let teacher = previousAgenda[date].cours[i].content.teacher
-								scheduleChannel.send(`# Shedule changed ! Lesson deleted **${date}**\n<@&${file.groupToPing}>\nThe lesson **${name}** have been deleted on **${date}** at **${time}**\n> - Day : ${date}\n> - Time : ${time}\n> - ${type} : ${name}\n> - Modality : ${modality}\n> - Teacher : ${teacher}`)
+							for (let key in previousAgenda[date].cours) {
+								if (previousAgenda[date].cours.hasOwnProperty(key) && !currentAgenda[date].cours.hasOwnProperty(key)){
+									let name = previousAgenda[date].cours[key].content.name
+									let time = previousAgenda[date].cours[key].content.time
+									let type = previousAgenda[date].cours[key].content.type
+									let modality = previousAgenda[date].cours[key].content.modality
+									let teacher = previousAgenda[date].cours[key].content.teacher
+									scheduleChannel.send(`# Shedule changed ! Lesson deleted **${date}**\n<@&${file.groupToPing}>\nThe lesson **${name}** have been deleted on **${date}** at **${time}**\n> - Day : ${date}\n> - Time : ${time}\n> - ${type} : ${name}\n> - Modality : ${modality}\n> - Teacher : ${teacher}`)
+								}
 							}
-
 						}
 					}
 					else{
@@ -601,8 +596,49 @@ export async function printAbsences(client, absences, file){
 	// Compare current datas with already stored datas
 	if (old_absences != 'Error' && typeof(absences) !== 'string') {
 		let hoursMissed = 0
-		let sentence = `You have `
 		let concat = ''
+
+		// If an absence is deleted on a date or a full date
+		let sentence = ''
+		let nbAbs = 0
+
+		for(date in old_absences){
+
+			if (absences[date]){
+				
+				sentence += `> - ${date}`
+				for (let time in old_absences[date]){
+					if(!absences[date][time]){
+						nbAbs++
+						let name = old_absences[date][time].course_name
+						sentence += `\n>  - **${name}** on ${time}`
+					}
+					
+				}
+				if (sentence == `> - ${date}\n`){
+					sentence=''
+				}
+
+			}
+			else{
+
+				sentence += `\n> - ${date}`
+				for (let abs in old_absences[date]){
+					nbAbs ++
+					let name = old_absences[date][abs].course_name
+					sentence += `\n>  - **${name}** on ${abs}`
+				}
+				
+			}			
+		}
+
+		if (nbAbs !== 0){
+			// scheduleChannel.send(`${nbAbs} Absence(s) deleted\n ${sentence}`)
+			userMessageChannel.send(`${nbAbs} Absence(s) deleted\n ${sentence}`)
+		}
+
+		// // New absence(s)	
+		sentence = `You have `
 
 		for (let date in absences){
 			for (let cours in absences[date]){
@@ -623,9 +659,10 @@ export async function printAbsences(client, absences, file){
 			// scheduleChannel.send(sentence)
 			userMessageChannel.send(sentence)
 		}
+		// }
 		
 	}
-	// If the file don't exist
+	// If the file don't exist (initial retrieve)
 	else if(old_absences == 'Error' && typeof(absences) !== 'string')
 	{
 		// Inform the user the number of absence if have one or more
@@ -651,7 +688,7 @@ export async function printAbsences(client, absences, file){
 	else{
 		log(`ERROR : Error when retrieve absences for ${file.username}`)
 		errorChannel.send(`Error when retrieve absences for ${file.username}`)
-		// userMessageChannel.send('Error when retrieve your absences')
+		userMessageChannel.send('Error when retrieve your absences')
 	}
 
 	if (typeof(absences) !== 'string' && JSON.stringify(old_absences) !== JSON.stringify(absences)){

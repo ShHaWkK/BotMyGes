@@ -5,3 +5,4 @@ In progress :
 To do :
 - /help
 - /setUp (permettra de paramétrer le scheduleChannel et le errorChannel)
+- /agenda (send the agenda in private message)

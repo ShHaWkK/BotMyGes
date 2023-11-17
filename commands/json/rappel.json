@@ -1,7 +1,7 @@
 {
     "name": "rappel",
     "type": 1,
-    "description": "Set a reminder [date] [description]",
+    "description": "Set a reminder [date - dd/mm/yyyy] [title] [description - optionnal]",
     "options": [
         {
           "type": 3,

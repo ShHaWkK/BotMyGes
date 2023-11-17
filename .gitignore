@@ -1,5 +1,9 @@
 config.json
-log/log.txt
-users/
-config.json
-node_modules
+log/
+users/*json
+users/absences/*.json
+users/agenda/*.json
+users/grades/*.json
+users/infos/*.json
+node_modules/
+

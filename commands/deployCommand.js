@@ -7,6 +7,30 @@ export async function deployCommand(client){
   // Import commands files
   const listFile = await listJsonFile('./commands/json/')
 
+  let tmpArr = []
+  // List all the cmd name in json files
+  for (const file of listFile) {
+    const command = await readJsonFile(`./commands/json/${file}`, 'utf8')
+    if (command != ['Error']){
+      tmpArr.push(command.name)
+    }
+  }
+  // Check if the json files are same as command registered by Discord
+  const listCMD = await client.application.commands.fetch()
+  for (let cmd of listCMD.values()){
+    // console.log(cmd)
+    if(!(tmpArr.includes(cmd.name))){
+      // Delete on discord if the command don't exist in the files
+      try{
+        client.application.commands.cache.find(c => c.name === cmd.name).delete();
+        log(`The command ${cmd.name} has been deleted`)
+      }
+      catch{
+        log(`ERROR : Impossible to delete the command ${cmd.name}`)
+      }
+    }
+  }
+
   // Create slash commands
   let createdCommand = []
   for (const file of listFile) {
@@ -31,54 +55,55 @@ export async function deployCommand(client){
                       .setRequired(optionC.required)
               );
               break;
+              
             case 4:
-              // commandData.addIntegerOption(option.name, option.description);
               commandData.addIntegerOption(option =>
                   option.setName(optionC.name)
                       .setDescription(optionC.description)
                       .setRequired(optionC.required)
               );
               break;
+
             case 5:
-              // commandData.addBooleanOption(option.name, option.description);
               commandData.addBooleanOption(option =>
                   option.setName(optionC.name)
                       .setDescription(optionC.description)
                       .setRequired(optionC.required)
               );
               break;
+
             case 6:
-              // commandData.addUserOption(option.name, option.description);
               commandData.addUserOption(option =>
                   option.setName(optionC.name)
                       .setDescription(optionC.description)
                       .setRequired(optionC.required)
               );
               break;
+
             case 7:
-              // commandData.addChannelOption(option.name, option.description);
               commandData.addChannelOption(option =>
                   option.setName(optionC.name)
                       .setDescription(optionC.description)
                       .setRequired(optionC.required)
               );
               break;
+
             case 8:
-              // commandData.addRoleOption(option.name, option.description);
               commandData.addRoleOption(option =>
                   option.setName(optionC.name)
                       .setDescription(optionC.description)
                       .setRequired(optionC.required)
               );
               break;
+
             case 9:
-              // commandData.addMentionableOption(option.name, option.description);
               commandData.addMentionableOption(option =>
                   option.setName(optionC.name)
                       .setDescription(optionC.description)
                       .setRequired(optionC.required)
               );
               break;
+
             default:
               log(`ERROR : Invalid option type for ${option.name} in ${file}`);
               break;
