@@ -3,9 +3,9 @@
 (Actuellement en Cours.....) 
 Ce bot sert a se connecter au site internet myges utilisé par les étudiant français du réseau GES
 
-## __**Le Bot ne fera l'objet d'aucun support après 2027-28**__
+## Le Bot ne fera l'objet d'aucun support après 2027-28
 
-### __Mise en palce du bot__
+### Mise en place du bot
 1. Acquisition des fichiers
     1. Création d'un dossier dans lequel mettre les fichiers
 
@@ -29,7 +29,11 @@ Ce bot sert a se connecter au site internet myges utilisé par les étudiant fra
  ````node index.js``
 
 
-### __Configurer le bot__
+
+
+
+
+### Configurer le bot
 
 1. Rendez vous sur le portail developpeur de Discord
     1. Créer une nouvelle application
