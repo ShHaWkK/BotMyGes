@@ -1,5 +1,5 @@
 config.json
-log/log.txt
+log/
 users/
 node_modules/
 
