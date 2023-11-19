@@ -23,7 +23,7 @@ export async function retrieveMyGesData(client){
 
 			// Variable to connect the bot to the myGes user account
 			const userId = file.userId;
-			// const username = file.username
+			const username = file.username
 			const login = file.login;
 			const password = file.password;		
 
@@ -68,7 +68,7 @@ export async function retrieveMyGesData(client){
 
 				// try{
 					// Retrieve grades
-					const grades = await userFunct.Grades(user, file.username, today)
+					const grades = await userFunct.Grades(user, username, today)
 					// Print grades
 					await userFunct.printGrades(client, grades, file)
 				// }
@@ -79,7 +79,7 @@ export async function retrieveMyGesData(client){
 
 				try{
 					// Retrieve absences
-					const absences = await userFunct.Absences(user, userId, today)
+					const absences = await userFunct.Absences(user, username, today)
 					// Print absences
 					await userFunct.printAbsences(client, absences, file)
 				}
