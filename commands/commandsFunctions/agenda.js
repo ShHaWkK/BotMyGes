@@ -9,9 +9,15 @@ import * as gFunct from "../../functionnalities/globalFunct.js"
 export async function personalAgenda(interaction, client){
 
     let username = interaction.user.username
-    
+
     // Log into the myges user account
     const file = await gFunct.readJsonFile('./users/infos/'+username+'.json')
+
+    if (file == 'Error'){
+        await interaction.reply('Error, you need to be registered..')
+        return
+    }
+    await interaction.reply('Sending a private message, please wait...');
 
     let errorChannel = await client.channels.cache.get(config.errorChannel)
     let userMessageChannel = await client.users.fetch(file.userId)
@@ -24,7 +30,6 @@ export async function personalAgenda(interaction, client){
         let saturday = new Date(gFunct.getWeekSaturday())
 
         log(`Executing /agenda for ${username}`)
-        await interaction.reply('Sending a private message, please wait...');
 
         // Variable to connect the bot to the myGes user account
         const login = file.login;
@@ -61,13 +66,15 @@ export async function personalAgenda(interaction, client){
             return
         }
 
-        const sentence = await userFunct.rappelWeeklyAgenda(client, agenda, "no-role")  
+        const sentence = await userFunct.rappelWeeklyAgenda(client, agenda, "no-role") 
+        log(`Sending private message /agenda to ${username}`)
         await userMessageChannel.send(sentence);
 
     }
     catch{
-        errorChannel.send('Error when retrieving your schedule...')
+        errorChannel.send(`ERROR : Impossible to retrieving schedule for ${username}`)
         userMessageChannel.send('Error when retrieving your schedule...')
+        log(`ERROR : Impossible to retrieving schedule for ${username}`)
     }
 
 }
