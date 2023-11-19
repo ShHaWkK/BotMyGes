@@ -1,0 +1,38 @@
+{
+    "agenda":{
+        "name":"agenda",
+        "command":"`/agenda`",
+        "description":"Send you your schedule in private message.",
+        "conditions":"You need to be registered, see `/help register`"
+    },
+    "help":{
+        "name":"help",
+        "command":"`/help *command*`",
+        "description":"Help you by presenting commands",
+        "conditions":"Everyone ~~ Optionnal 'command' parameter"
+    },
+    "rappel":{
+        "name":"rappel",
+        "command":"`/rappel date title description`",
+        "description":"Set a reminder (rappel in FR)",
+        "conditions":"Everyone ~~ date : [dd/mm/yyyy] ~~ title : [mandatory] ~~ description [Optionnal]"
+    },
+    "register":{
+        "name":"register",
+        "command":"`/register mygesusername mygespassword`",
+        "description":"Register you in order to retrieve datas from your myges account",
+        "conditions":"Having a myges account ~~ Retrieve your schedule, your grades and your absences. ~~ Data are just retrieve from your account, store in the local machine to compare it with the old data and then display to you. No others applications with your data."
+    },
+    "set-status":{
+        "name":"set-status",
+        "command":"`/set-status status`",
+        "description":"Set the status of the bot",
+        "conditions":"Need to be the owner of the bot"
+    },
+    "set-up":{
+        "name":"set-up",
+        "command":"`/set-up scheduleChannel reminderChannel errorChannel`",
+        "description":"Set the schedule channel, the reminder channel and the error channel used by the bot to provide informations",
+        "conditions":"Need to be the owner of the bot"
+    }
+}

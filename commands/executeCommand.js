@@ -1,11 +1,12 @@
 import { register } from "./commandsFunctions/register.js";
 import { setStatus } from "./commandsFunctions/setstatus.js";
+import { help } from "./commandsFunctions/help.js";
 
 export async function executeSlashCommand(interaction, client){
     if (!interaction.isCommand()) return;
 
     if (interaction.commandName === 'help') {
-        await interaction.reply('help !');
+        help(interaction)
     }
 
     if (interaction.commandName === 'register') {
