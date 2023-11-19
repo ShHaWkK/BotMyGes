@@ -1,8 +1,14 @@
 {
+    "absences":{
+        "name":"absences",
+        "command":"`/absences`",
+        "description":"Send your absences in private message.",
+        "conditions":"You need to be registered, see `/help register`"
+    },
     "agenda":{
         "name":"agenda",
         "command":"`/agenda`",
-        "description":"Send you your schedule in private message.",
+        "description":"Send your schedule in private message.",
         "conditions":"You need to be registered, see `/help register`"
     },
     "help":{
@@ -10,6 +16,12 @@
         "command":"`/help *command*`",
         "description":"Help you by presenting commands",
         "conditions":"Everyone ~~ Optionnal 'command' parameter"
+    },
+    "grades":{
+        "name":"grades",
+        "command":"`/grades`",
+        "description":"Send your grades in private message.",
+        "conditions":"You need to be registered, see `/help register`"
     },
     "rappel":{
         "name":"rappel",
