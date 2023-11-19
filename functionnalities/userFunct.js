@@ -306,6 +306,34 @@ export async function printAgenda(client, currentAgenda, file, user){
 	// Try to read the json file
 	let previousAgenda = await readJsonFile(`./users/agenda/${classes}_agenda.json`)
 
+
+	log('Searching the role correspondig to the class for the ping')
+	var groupToPing = "Cannot find the role corresponding to the classes :("
+
+	try{
+		let guildsId = await client.guilds.cache;
+
+		let guildData
+		guildsId.forEach(guild => {
+			if (guild.id == config.guildId){
+				guildData =  guild
+				return
+				
+			}					
+			});
+		
+		guildData.roles.cache.forEach(role => {
+			if (role.name == classes){
+				groupToPing = role.id
+				return
+			}
+			});
+	}
+	catch{
+		log('ERROR : (crash) Impossible to find the role corresponding to the class')
+	}
+	
+
 	if (previousAgenda != 'Error' && typeof(currentAgenda) !== 'string'){
 
 		// try{
@@ -351,7 +379,7 @@ export async function printAgenda(client, currentAgenda, file, user){
 										let teacher = previousAgenda[date].cours[i].content.teacher
 
 										if (currentAgenda[date].cours[i].content.name != previousAgenda[date].cours[i].content.name){
-											sentence = `# /!\\ A lesson change on ${date} !\n<@&${file.groupToPing}>\n> - ~~${time}~~ => ${currentAgenda[date].cours[i].time}\n> - ~~${name}~~ => ${currentAgenda[date].cours[i].content.name}\n> - ~~${type}~~ => ${currentAgenda[date].cours[i].content.type}\n> - ~~${modality}~~ => ${currentAgenda[date].cours[i].content.modality}\n> - ~~${teacher}~~ => ${currentAgenda[date].cours[i].content.teacher}`
+											sentence = `# /!\\ A lesson change on ${date} !\n<@&${groupToPing}>\n> - ~~${time}~~ => ${currentAgenda[date].cours[i].time}\n> - ~~${name}~~ => ${currentAgenda[date].cours[i].content.name}\n> - ~~${type}~~ => ${currentAgenda[date].cours[i].content.type}\n> - ~~${modality}~~ => ${currentAgenda[date].cours[i].content.modality}\n> - ~~${teacher}~~ => ${currentAgenda[date].cours[i].content.teacher}`
 											scheduleChannel.send(sentence)
 										}
 										else{
@@ -377,7 +405,7 @@ export async function printAgenda(client, currentAgenda, file, user){
 											}
 
 											if (sentence_ok == 'True'){
-												sentence = `# Lesson updated on ${date}\n<@&${file.groupToPing}>\n> - ${time}\n> - ${name}\n> - ${type}\n> - ${modality}\n> - ${teacher}`
+												sentence = `# Lesson updated on ${date}\n<@&${groupToPing}>\n> - ${time}\n> - ${name}\n> - ${type}\n> - ${modality}\n> - ${teacher}`
 												scheduleChannel.send(sentence)
 												sentence_ok = 'False'
 												sentence_ok_2 = 'True'
@@ -394,7 +422,7 @@ export async function printAgenda(client, currentAgenda, file, user){
 											let modality = currentAgenda[date].cours[i].content.modality
 											let teacher = currentAgenda[date].cours[i].content.teacher
 
-											scheduleChannel.send(`# Shedule changed ! New lesson added on **${date}**\n<@&${file.groupToPing}>\nYou have a new lesson on **${date}** at **${time}**\n> - Day : ${date}\n> - Time : ${time}\n> - ${type} : ${name}\n> - Modality : ${modality}\n> - Teacher : ${teacher}`)
+											scheduleChannel.send(`# Shedule changed ! New lesson added on **${date}**\n<@&${groupToPing}>\nYou have a new lesson on **${date}** at **${time}**\n> - Day : ${date}\n> - Time : ${time}\n> - ${type} : ${name}\n> - Modality : ${modality}\n> - Teacher : ${teacher}`)
 										}
 									}
 								}
@@ -414,7 +442,7 @@ export async function printAgenda(client, currentAgenda, file, user){
 									let type = previousAgenda[date].cours[key].content.type
 									let modality = previousAgenda[date].cours[key].content.modality
 									let teacher = previousAgenda[date].cours[key].content.teacher
-									scheduleChannel.send(`# Shedule changed ! Lesson deleted **${date}**\n<@&${file.groupToPing}>\nThe lesson **${name}** have been deleted on **${date}** at **${time}**\n> - Day : ${date}\n> - Time : ${time}\n> - ${type} : ${name}\n> - Modality : ${modality}\n> - Teacher : ${teacher}`)
+									scheduleChannel.send(`# Shedule changed ! Lesson deleted **${date}**\n<@&${groupToPing}>\nThe lesson **${name}** have been deleted on **${date}** at **${time}**\n> - Day : ${date}\n> - Time : ${time}\n> - ${type} : ${name}\n> - Modality : ${modality}\n> - Teacher : ${teacher}`)
 								}
 							}
 						}
@@ -463,8 +491,8 @@ export async function printAgenda(client, currentAgenda, file, user){
 
 				const dateObj = new Date(realDate.split('/')[2], realDate.split('/')[1] - 1, realDate.split('/')[0]);
 				if (dateObj.getTime() >= today.getTime()) {
-					// scheduleChannel.send(`# A day with lesson(s) ${additionalInfos} on **${realDate}**\n<@&${file.groupToPing}>\n${sentence}`)
-					scheduleChannel.send(`# A day with lesson(s) ${additionalInfos}\n<@&${file.groupToPing}>\n${sentence}`)
+					// scheduleChannel.send(`# A day with lesson(s) ${additionalInfos} on **${realDate}**\n<@&${groupToPing}>\n${sentence}`)
+					scheduleChannel.send(`# A day with lesson(s) ${additionalInfos}\n<@&${groupToPing}>\n${sentence}`)
 				}
 
 			}
@@ -526,7 +554,8 @@ export async function Absences(user, userId, date){
 
 	const year = date.getFullYear();
 
-	let absences = await user.getAbsences(year)
+	// Transform year into string
+	let absences = await user.getAbsences(`${year}`)
 
 	log('Creating absences array')
 	
@@ -568,7 +597,7 @@ export async function Absences(user, userId, date){
 
 	}
 	else{
-		absences = 'Error'
+		absences = `Error when fetching absenses or no absences for the user ${userId}`
 	}
 	return absences
 
@@ -578,6 +607,10 @@ export async function Absences(user, userId, date){
 
 export async function printAbsences(client, absences, file){
 
+	let scheduleChannel = client.channels.cache.get(config.scheduleChannelId)
+	let errorChannel = client.channels.cache.get(config.errorChannel)
+	let userMessageChannel = await client.users.fetch(file.userId)
+
 	if(typeof(absences) === 'string'){
 		log(`${absences}`)
 		errorChannel.send(absences)
@@ -585,10 +618,6 @@ export async function printAbsences(client, absences, file){
 	}
 
 	log('Compare old absences with current absences')
-
-	let scheduleChannel = client.channels.cache.get(config.scheduleChannelId)
-	let errorChannel = client.channels.cache.get(config.errorChannel)
-	let userMessageChannel = await client.users.fetch(file.userId)
 
 	// ReadFile
 	const old_absences = await readJsonFile(`./users/absences/${file.userId}_absences.json`)
