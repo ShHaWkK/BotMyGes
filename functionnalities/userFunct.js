@@ -636,7 +636,7 @@ export async function printAbsences(client, absences, file){
 	log('Compare old absences with current absences')
 
 	// ReadFile
-	const old_absences = await readJsonFile(`./users/absences/${file.userId}_absences.json`)
+	const old_absences = await readJsonFile(`./users/absences/${file.username}_absences.json`)
 
 	// Compare current datas with already stored datas
 	if (old_absences != 'Error' && typeof(absences) !== 'string') {
@@ -711,7 +711,7 @@ export async function printAbsences(client, absences, file){
 	else if(old_absences == 'Error' && typeof(absences) !== 'string')
 	{
 		// Inform the user the number of absence if have one or more
-		console.log(absences)
+		// console.log(absences)
 
 		let sentence = ''
 		let nbHour = 0
@@ -736,10 +736,10 @@ export async function printAbsences(client, absences, file){
 		userMessageChannel.send('Error when retrieve your absences')
 	}
 
-	if (typeof(absences) !== 'string' && JSON.stringify(old_absences) !== JSON.stringify(absences)){
+	if (typeof(absences) !== 'string' && JSON.stringify(old_absences) !== JSON.stringify(absences) || old_absences == 'Error'){
 		// Then create a file with absences
 		log('Writing absences file')
-		await gFunct.writeJsonFile('./users/absences', `${file.userId}_absences`, absences)
+		await gFunct.writeJsonFile('./users/absences', `${file.username}_absences`, absences)
 	}
 	else if (absences == 'string'){
 		log(`ERROR : ${absences}, or no absences datas for ${file.username}`)
