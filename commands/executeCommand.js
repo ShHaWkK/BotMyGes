@@ -1,16 +1,21 @@
 import { register } from "./commandsFunctions/register.js";
 import { setStatus } from "./commandsFunctions/setstatus.js";
 import { help } from "./commandsFunctions/help.js";
+import { personalAgenda } from "./commandsFunctions/agenda.js";
 
 export async function executeSlashCommand(interaction, client){
     if (!interaction.isCommand()) return;
+
+    if (interaction.commandName === 'agenda') {
+        personalAgenda(interaction)
+    }
 
     if (interaction.commandName === 'help') {
         help(interaction)
     }
 
     if (interaction.commandName === 'register') {
-      await register(interaction)
+      register(interaction)
     }
 
     if (interaction.commandName === 'rappel') {
@@ -18,7 +23,7 @@ export async function executeSlashCommand(interaction, client){
     }
 
     if (interaction.commandName === 'set-status') {
-        await setStatus(interaction, client)
+        setStatus(interaction, client)
     }
 
     if (interaction.commandName === 'set-up') {
