@@ -1,0 +1,11 @@
+{
+	"botToken":"",
+	"guildId":"",
+	"errorChannel":"",
+	"scheduleChannelId":"",
+	"reminderChannel":"",
+	"requestDelaySecond":"3600000",
+	"owners":[
+		
+	]
+}
