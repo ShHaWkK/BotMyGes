@@ -7,7 +7,7 @@ export async function executeSlashCommand(interaction, client){
     if (!interaction.isCommand()) return;
 
     if (interaction.commandName === 'agenda') {
-        personalAgenda(interaction)
+        personalAgenda(interaction, client)
     }
 
     if (interaction.commandName === 'help') {
