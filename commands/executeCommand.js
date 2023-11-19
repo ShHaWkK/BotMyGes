@@ -6,8 +6,16 @@ import { personalAgenda } from "./commandsFunctions/agenda.js";
 export async function executeSlashCommand(interaction, client){
     if (!interaction.isCommand()) return;
 
+    if (interaction.commandName === 'absences') {
+        await interaction.reply('Command under construction..');
+    }
+
     if (interaction.commandName === 'agenda') {
         personalAgenda(interaction, client)
+    }
+
+    if (interaction.commandName === 'grades') {
+        await interaction.reply('Command under construction..');
     }
 
     if (interaction.commandName === 'help') {
@@ -19,7 +27,7 @@ export async function executeSlashCommand(interaction, client){
     }
 
     if (interaction.commandName === 'rappel') {
-        await interaction.reply('rappel !');
+        await interaction.reply('Command under construction..');
     }
 
     if (interaction.commandName === 'set-status') {
@@ -27,7 +35,7 @@ export async function executeSlashCommand(interaction, client){
     }
 
     if (interaction.commandName === 'set-up') {
-        await interaction.reply('set-up !');
+        await interaction.reply('Command under construction..');
     }
       
 };
