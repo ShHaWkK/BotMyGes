@@ -96,6 +96,10 @@ export async function writeJsonFile(directoryPath, name, array, optionnalSentenc
     }
   });
 
+  if (name.includes('.json')){
+    name = name.split('.json')[0]
+  }
+
 
   fs.writeFile(`${directoryPath}/${name}.json`, json, (err) => {
 	  if (err) {
