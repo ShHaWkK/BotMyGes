@@ -170,25 +170,31 @@ export async function rappelWeeklyAgenda(client, currentAgenda, classes, optionn
 	try{
 		try {
 
-			// List all the guild of the bot
-			let guildsId = await client.guilds.cache;
-
-			let guildData
-			guildsId.forEach(guild => {
-				if (guild.id == config.guildId){
-					guildData =  guild
-					return
-					
-				}					
-				});
-			
 			var groupToPing = "Cannot find the role corresponding to the classes :("
-			guildData.roles.cache.forEach(role => {
-				if (role.name == classes){
-					groupToPing = role.id
-					return
-				}
-				});
+			if (classes !== "no-role"){
+
+				// List all the guild of the bot
+				let guildsId = await client.guilds.cache;
+
+				let guildData
+				guildsId.forEach(guild => {
+					if (guild.id == config.guildId){
+						guildData =  guild
+						return
+						
+					}					
+					});
+				
+				guildData.roles.cache.forEach(role => {
+					if (role.name == classes){
+						groupToPing = `<@&${role.id}>\n`
+						return
+					}
+					});
+			}
+			else{
+				var groupToPing = ""
+			}
 
 		}
 		catch (error)
@@ -196,7 +202,7 @@ export async function rappelWeeklyAgenda(client, currentAgenda, classes, optionn
 			console.error(error);
 		}
 
-		let sentence = `# Your weekly schedule ${optionnalSentence} :\n<@&${groupToPing}>\n`
+		let sentence = `# Your weekly schedule ${optionnalSentence} :\n${groupToPing}`
 		for (var date in currentAgenda){
 			let cours = currentAgenda[date].cours;
 			sentence = sentence+`## --------${date}--------\n`
