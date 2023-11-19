@@ -1,0 +1,13 @@
+{
+    "name": "add-owner",
+    "type": 1,
+    "description": "Add someone ",
+    "options": [
+        {
+          "type": 6,
+          "name": "ownerusername",
+          "description": "The username of the new owner",
+          "required": true
+        }
+    ]
+}

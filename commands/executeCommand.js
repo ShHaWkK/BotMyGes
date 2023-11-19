@@ -3,6 +3,8 @@ import { setStatus } from "./commandsFunctions/setstatus.js";
 import { help } from "./commandsFunctions/help.js";
 import { personalAgenda } from "./commandsFunctions/agenda.js";
 
+import { addOwner } from "./commandsFunctions/addowner.js";
+
 export async function executeSlashCommand(interaction, client){
     if (!interaction.isCommand()) return;
 
@@ -28,6 +30,13 @@ export async function executeSlashCommand(interaction, client){
 
     if (interaction.commandName === 'rappel') {
         await interaction.reply('Command under construction..');
+    }
+
+
+
+    // Admin Commands
+    if (interaction.commandName === 'add-owner') {
+        addOwner(interaction, client)
     }
 
     if (interaction.commandName === 'set-status') {
