@@ -45,8 +45,8 @@ function main(){
 	client.on('ready', async () => {
 		log(`${client.user.username} has logged in, waiting...`)
 		client.user.setActivity({
-			// name:"Seems like I'm in developpement..."
-			name:"Just testing the bot in real condition"
+			name:"Seems like I'm in developpement..."
+			// name:"Just testing the bot in real condition"
 		})
 
 		client.user.setStatus('dnd');
@@ -68,7 +68,7 @@ function main(){
 
 	client.on('interactionCreate', async (interaction) => {
 
-		executeSlashCommand(interaction)
+		executeSlashCommand(interaction, client)
 	  });
 }
 
