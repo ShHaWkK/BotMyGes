@@ -6,7 +6,7 @@
         {
           "type": 6,
           "name": "ownerusername",
-          "description": "The username of the new owner",
+          "description": "The username of the another owner",
           "required": true
         }
     ]
