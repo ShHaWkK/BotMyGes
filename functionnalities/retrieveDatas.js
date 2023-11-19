@@ -2,7 +2,6 @@ import * as userFunct from './userFunct.js'
 import * as gFunct from './globalFunct.js'
 import { log } from './globalFunct.js'
 import config from '../config.json' assert {type: 'json'}
-import { DefaultUserAgent } from 'discord.js';
 
 export async function retrieveMyGesData(client){
 
@@ -57,7 +56,7 @@ export async function retrieveMyGesData(client){
 					}
 					// console.log(monday, saturday)
 					// Request the agenda
-					const agenda = await userFunct.Agenda(user, monday, saturday, userId)
+					const agenda = await userFunct.Agenda(user, monday, saturday)
 
 					// Write in [groupClasseName]_agenda.json and print agenda on discord if changed...
 					await userFunct.printAgenda(client, agenda, file, user)
