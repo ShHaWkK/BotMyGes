@@ -31,7 +31,7 @@ export async function retrieveMyGesData(client){
 			const user = await userFunct.login(login, password)
 
 			if (user != 'Error'){
-				// try{
+				try{
 
 					// Create the current date
 					var today = new Date();
@@ -60,11 +60,11 @@ export async function retrieveMyGesData(client){
 
 					// Write in [groupClasseName]_agenda.json and print agenda on discord if changed...
 					await userFunct.printAgenda(client, agenda, file, user)
-				// }
-				// catch{
-				// 	log(`Error when trying to fetch the schedule for ${login}`)
-				// 	errorChannel.send(`Error when trying to fetch the schedule for ${login}`)
-				// }
+				}
+				catch{
+					log(`Error when trying to fetch the schedule for ${login}`)
+					errorChannel.send(`Error when trying to fetch the schedule for ${login}`)
+				}
 
 				// try{
 					// Retrieve grades
