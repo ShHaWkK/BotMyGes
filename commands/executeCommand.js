@@ -1,15 +1,16 @@
 import { register } from "./commandsFunctions/register.js";
-import { setStatus } from "./commandsFunctions/setstatus.js";
 import { help } from "./commandsFunctions/help.js";
 import { personalAgenda } from "./commandsFunctions/agenda.js";
+import { personalAbsences } from "./commandsFunctions/absences.js";
 
 import { addOwner } from "./commandsFunctions/addowner.js";
+import { setStatus } from "./commandsFunctions/setstatus.js";
 
 export async function executeSlashCommand(interaction, client){
     if (!interaction.isCommand()) return;
 
     if (interaction.commandName === 'absences') {
-        await interaction.reply('Command under construction..');
+        personalAbsences(interaction, client)
     }
 
     if (interaction.commandName === 'agenda') {
@@ -25,7 +26,7 @@ export async function executeSlashCommand(interaction, client){
     }
 
     if (interaction.commandName === 'register') {
-      register(interaction)
+        register(interaction)
     }
 
     if (interaction.commandName === 'rappel') {
