@@ -105,10 +105,11 @@ export async function writeJsonFile(directoryPath, name, array, optionnalSentenc
 	  if (err) {
 	    console.error(err);
       log(`ERROR : error while writing file ${directoryPath}/${name}.json, ${err}`)
-	    return;
+	    return 'Error';
 	  }
 	  // console.log('Data written to file');
     log(`Data written ${optionnalSentence}to ${directoryPath}/${name}.json`)
+    return 'ok'
 	});
 }
 
