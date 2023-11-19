@@ -548,7 +548,7 @@ export async function printGrades(client, grades, file){
 
 // ---------------------------ABSENCES----------------------------------
 
-export async function Absences(user, userId, date){
+export async function Absences(user, userName, date){
 	
 	log('Checking absences')
 
@@ -560,44 +560,49 @@ export async function Absences(user, userId, date){
 	log('Creating absences array')
 	
 	if (absences){
-		// Store usefull datas in an array
-		let cours = []
-		// Only take few information from the promise
-		for (let i = 0; i < absences.length; i++) {
-			var dateAbsence = new Date(absences[i].date).toLocaleDateString();
-			var timeAbsence = new Date(absences[i].date).toLocaleTimeString();
+		try{
+			// Store usefull datas in an array
+			let cours = []
+			// Only take few information from the promise
+			for (let i = 0; i < absences.length; i++) {
+				var dateAbsence = new Date(absences[i].date).toLocaleDateString();
+				var timeAbsence = new Date(absences[i].date).toLocaleTimeString();
 
-			var tmp = {
-				"date": dateAbsence,
-				"hour": timeAbsence,
-				"course_name": absences[i].course_name,
-				"justified": absences[i].justified,
-				"semester": absences[i].trimester_name
-			}		
-			cours.push(tmp)
-		}
-
-		// Sort the array by date then by hours (not me lol)
-		const result = cours.reduce((acc, cur) => {
-			const { date, hour, ...rest } = cur;
-			if (!acc[date]) {
-			  acc[date] = {};
+				var tmp = {
+					"date": dateAbsence,
+					"hour": timeAbsence,
+					"course_name": absences[i].course_name,
+					"justified": absences[i].justified,
+					"semester": absences[i].trimester_name
+				}		
+				cours.push(tmp)
 			}
-			acc[date][hour] = rest;
-			return acc;
-		  }, {});
-		
-		// Sorts hours in ascending order for each day (not me too lol)
-		for (const date in result) {
-			const sorted = Object.entries(result[date]).sort((a, b) => a[0].localeCompare(b[0]));
-			result[date] = Object.fromEntries(sorted);
-		}
 
-		absences = result
+			// Sort the array by date then by hours (not me lol)
+			const result = cours.reduce((acc, cur) => {
+				const { date, hour, ...rest } = cur;
+				if (!acc[date]) {
+				acc[date] = {};
+				}
+				acc[date][hour] = rest;
+				return acc;
+			}, {});
+			
+			// Sorts hours in ascending order for each day (not me too lol)
+			for (const date in result) {
+				const sorted = Object.entries(result[date]).sort((a, b) => a[0].localeCompare(b[0]));
+				result[date] = Object.fromEntries(sorted);
+			}
+
+			absences = result
+		}
+		catch{
+			absences = `Error when fetching your absences... userName : ${userName}`
+		}
 
 	}
 	else{
-		absences = `Error when fetching absenses or no absences for the user ${userId}`
+		absences = 0
 	}
 	return absences
 
@@ -614,6 +619,11 @@ export async function printAbsences(client, absences, file){
 	if(typeof(absences) === 'string'){
 		log(`${absences}`)
 		errorChannel.send(absences)
+		userMessageChannel.send(absences)
+		return
+	}
+	else if (typeof(absences) === 'number'){
+		log(`No absences for ${file.username}`)
 		return
 	}
 

@@ -69,7 +69,7 @@ export async function retrieveMyGesData(client){
 
 				// try{
 					// Retrieve grades
-					const grades = await userFunct.Grades(user, userId, today)
+					const grades = await userFunct.Grades(user, file.username, today)
 					// Print grades
 					await userFunct.printGrades(client, grades, file)
 				// }
