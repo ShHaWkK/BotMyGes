@@ -1,6 +1,6 @@
 # BotMyGes 
 
-(Actuellement en Cours.....) 
+(Actuellement en Cours.....) (Still in developpement)
 Ce bot sert a se connecter au site internet myges utilisé par les étudiant français du réseau GES
 
 ## Le Bot ne fera l'objet d'aucun support après 2027-28
