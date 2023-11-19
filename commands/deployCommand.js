@@ -43,6 +43,7 @@ export async function deployCommand(client){
         .setName(command.name)
         .setDescription(command.description)
 
+      log(`Deploying ${command.name}`)
       // // Add options to the command
       if (command.options) {
         for (const optionC of command.options) {
