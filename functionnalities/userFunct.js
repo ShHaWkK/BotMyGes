@@ -41,6 +41,7 @@ export async function login(username, password){
 	}
 }
 
+// ---------------------------------------------------------------------
 
 export async function getClasses(user, year) {
 	// Return the class of the user, using the api
@@ -342,7 +343,7 @@ export async function printAgenda(client, currentAgenda, file, user){
 
 	if (previousAgenda != 'Error' && typeof(currentAgenda) !== 'string'){
 
-		// try{
+		try{
 
 			log(`Comparing new to old agenda for ${classes}, ${file.username}`)
 			
@@ -503,11 +504,11 @@ export async function printAgenda(client, currentAgenda, file, user){
 
 			}
 
-		// }
-		// catch (error){
-		// 	log(`ERROR : Impossible to compare new and old schedule for ${file.username}, ${error}`)
-		// 	errorChannel.send(`Impossible to compare new and old schedule for ${file.username}`)
-		// }
+		}
+		catch (error){
+			log(`ERROR : Impossible to compare new and old schedule for ${file.username}, ${error}`)
+			errorChannel.send(`Impossible to compare new and old schedule for ${file.username}`)
+		}
 	}
 	// If the old file don't exist, it's like it's a weelklyAgenda
 	else if(previousAgenda == 'Error' && typeof(currentAgenda) !== 'string'){
