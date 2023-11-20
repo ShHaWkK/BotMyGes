@@ -26,7 +26,7 @@ Ce bot sert a se connecter au site internet myges utilisé par les étudiant fra
     1. Voir __Configurer le bot__
 
 5. Run le programme
-    1. ````node index.js``
+    1. ```node index.js```
 
 
 
