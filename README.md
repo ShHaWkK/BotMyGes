@@ -11,7 +11,7 @@ Ce bot sert a se connecter au site internet myges utilisé par les étudiant fra
 
     2. Télécharger les fichiers en zip
     Ou
-    3. ````git clone https://github.com/ShHaWkK/BotMyGes.git``
+    3. ```git clone https://github.com/ShHaWkK/BotMyGes.git```
 
 2. Télécharger Node.js
 
