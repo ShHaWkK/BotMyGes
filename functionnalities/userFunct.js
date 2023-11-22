@@ -313,6 +313,11 @@ export async function printAgenda(client, currentAgenda, file, user){
 	// Try to read the json file
 	let previousAgenda = await readJsonFile(`./users/agenda/${classes}_agenda.json`)
 
+	if (previousAgenda == 'Error'){
+		log(`Impossible to read the ${classes}_agenda.json`)
+		return
+	}
+
 
 	log('Searching the role correspondig to the class for the ping')
 	var groupToPing = "Cannot find the role corresponding to the classes :("
@@ -638,6 +643,11 @@ export async function printAbsences(client, absences, file){
 
 	// ReadFile
 	const old_absences = await readJsonFile(`./users/absences/${file.username}_absences.json`)
+
+	if (old_absences == 'Error'){
+		log(`Impossible to read ./users/absences/${file.username}_absences.json`)
+		return
+	}
 
 	// Compare current datas with already stored datas
 	if (old_absences != 'Error' && typeof(absences) !== 'string') {
