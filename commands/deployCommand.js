@@ -11,7 +11,7 @@ export async function deployCommand(client){
   // List all the cmd name in json files
   for (const file of listFile) {
     const command = await readJsonFile(`./commands/json/${file}`, 'utf8')
-    if (command != ['Error']){
+    if (command != 'Error'){
       tmpArr.push(command.name)
     }
   }
@@ -39,81 +39,87 @@ export async function deployCommand(client){
 
       const command = await readJsonFile(`./commands/json/${file}`, 'utf8')
 
-      let commandData = new SlashCommandBuilder()
-        .setName(command.name)
-        .setDescription(command.description)
+      if (command != 'Error'){
 
-      log(`Deploying ${command.name}`)
-      // // Add options to the command
-      if (command.options) {
-        for (const optionC of command.options) {
+        let commandData = new SlashCommandBuilder()
+          .setName(command.name)
+          .setDescription(command.description)
 
-          switch (optionC.type) {
-            case 3:
-              commandData.addStringOption(option =>
-                  option.setName(optionC.name)
-                      .setDescription(optionC.description)
-                      .setRequired(optionC.required)
-              );
-              break;
-              
-            case 4:
-              commandData.addIntegerOption(option =>
-                  option.setName(optionC.name)
-                      .setDescription(optionC.description)
-                      .setRequired(optionC.required)
-              );
-              break;
+        log(`Deploying ${command.name}`)
+        // // Add options to the command
+        if (command.options) {
+          for (const optionC of command.options) {
 
-            case 5:
-              commandData.addBooleanOption(option =>
-                  option.setName(optionC.name)
-                      .setDescription(optionC.description)
-                      .setRequired(optionC.required)
-              );
-              break;
+            switch (optionC.type) {
+              case 3:
+                commandData.addStringOption(option =>
+                    option.setName(optionC.name)
+                        .setDescription(optionC.description)
+                        .setRequired(optionC.required)
+                );
+                break;
+                
+              case 4:
+                commandData.addIntegerOption(option =>
+                    option.setName(optionC.name)
+                        .setDescription(optionC.description)
+                        .setRequired(optionC.required)
+                );
+                break;
 
-            case 6:
-              commandData.addUserOption(option =>
-                  option.setName(optionC.name)
-                      .setDescription(optionC.description)
-                      .setRequired(optionC.required)
-              );
-              break;
+              case 5:
+                commandData.addBooleanOption(option =>
+                    option.setName(optionC.name)
+                        .setDescription(optionC.description)
+                        .setRequired(optionC.required)
+                );
+                break;
 
-            case 7:
-              commandData.addChannelOption(option =>
-                  option.setName(optionC.name)
-                      .setDescription(optionC.description)
-                      .setRequired(optionC.required)
-              );
-              break;
+              case 6:
+                commandData.addUserOption(option =>
+                    option.setName(optionC.name)
+                        .setDescription(optionC.description)
+                        .setRequired(optionC.required)
+                );
+                break;
 
-            case 8:
-              commandData.addRoleOption(option =>
-                  option.setName(optionC.name)
-                      .setDescription(optionC.description)
-                      .setRequired(optionC.required)
-              );
-              break;
+              case 7:
+                commandData.addChannelOption(option =>
+                    option.setName(optionC.name)
+                        .setDescription(optionC.description)
+                        .setRequired(optionC.required)
+                );
+                break;
 
-            case 9:
-              commandData.addMentionableOption(option =>
-                  option.setName(optionC.name)
-                      .setDescription(optionC.description)
-                      .setRequired(optionC.required)
-              );
-              break;
+              case 8:
+                commandData.addRoleOption(option =>
+                    option.setName(optionC.name)
+                        .setDescription(optionC.description)
+                        .setRequired(optionC.required)
+                );
+                break;
 
-            default:
-              log(`ERROR : Invalid option type for ${option.name} in ${file}`);
-              break;
+              case 9:
+                commandData.addMentionableOption(option =>
+                    option.setName(optionC.name)
+                        .setDescription(optionC.description)
+                        .setRequired(optionC.required)
+                );
+                break;
+
+              default:
+                log(`ERROR : Invalid option type for ${option.name} in ${file}`);
+                break;
+            }
           }
         }
-      }
 
-      await client.application.commands.create(commandData);
-      createdCommand.push(command.name)
+        await client.application.commands.create(commandData);
+        createdCommand.push(command.name)
+      }
+      else{
+        log(`ERROR : Impossible to read the file : ${file} to deploy the command`)
+      }
     }
     catch(err){
       log(`ERROR : Impossible to create the ${file.split('.json')[0]} command : ${err}`)
