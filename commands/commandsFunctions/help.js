@@ -5,6 +5,11 @@ export async function help(interaction){
 
     const file = await readJsonFile('./commands/helpFile.json')
 
+    if (file == 'Error'){
+        interaction.reply('Impossible to read helpFile.json')
+        return
+    }
+
     if (interaction.options.getString('command')){
 
         let command = interaction.options.getString('command')
