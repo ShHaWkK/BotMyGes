@@ -289,8 +289,9 @@ export async function printAgenda(client, currentAgenda, file, user){
 	let hour = today.getHours();
 	let minute = today.getMinutes()
 
-	// If today > sunday of the same week
+	//If today > sunday of the same week
 	if (today >= saturday){
+		log('Today is > than sunday')
 
 		if (hour === 17 || hour === 18 && minute <= 14){
 			await gFunct.writeJsonFile('./users/agenda', `${classes}_agenda`, currentAgenda, "for the next week ")
@@ -301,6 +302,7 @@ export async function printAgenda(client, currentAgenda, file, user){
 
 	}
 	else{
+		log('We are between 17h and 18h, send tomorrowAgenda')
 		if (hour === 17 || hour === 18 && minute <= 14){
 			const sentence = await rappelTomorrowAgenda(currentAgenda, file)
 			scheduleChannel.send(sentence)
@@ -356,8 +358,21 @@ export async function printAgenda(client, currentAgenda, file, user){
 			// Reach each content in each dates
 			for (let date in currentAgenda) {
 
+				let dateTmp = date.split('/')
+				dateTmp = `${dateTmp[1]}/${dateTmp[0]}/${dateTmp[2]}`
+				dateTmp = new Date(dateTmp)
+				dateTmp.setUTCHours(0,0,0,0)
+				dateTmp.setUTCDate(dateTmp.getUTCDate() + 1);
+				console.log(dateTmp);
+
+				console.log(date, dateTmp, dateTmp.getTime(), today.getTime(), today.toLocaleDateString())
+
+				if (dateTmp.getTime() >= today.getTime()) {
+					console.log('YEY')
+				}
+
 				// Only compare comming days
-				if (new Date(date).getTime() >= new Date(today.toLocaleDateString()).getTime()) {
+				if (dateTmp.getTime() >= today.getTime()) {
 
 					// If a day exist in the previousAgenda and in the currentAgenda
 					log(`Checking new lessons for ${date}`)
@@ -465,6 +480,9 @@ export async function printAgenda(client, currentAgenda, file, user){
 
 					sentence_ok_2 == "False" ? '' : log(`New schedule for ${file.username} on ${date}`)
 					sentence_ok_2 = "False"
+				}
+				else{
+					log(`WARNING : No check for new lessons for ${date}`)
 				}
 			}
 
