@@ -5,6 +5,8 @@ Ce bot sert a se connecter au site internet myges utilisé par les étudiant fra
 
 ## Le Bot ne fera l'objet d'aucun support après 2027-28
 
+Dernière version en zip : https://github.com/ShHaWkK/BotMyGes/releases
+
 ### Mise en place du bot
 1. Acquisition des fichiers
     1. Création d'un dossier dans lequel mettre les fichiers
