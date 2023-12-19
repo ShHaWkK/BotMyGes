@@ -14,6 +14,10 @@ import { Client, GatewayIntentBits, ActivityType, Events } from 'discord.js';
 
 const file = await gFunct.readJsonFile('./users/infos/556461959042564098.json')
 
+if (file == 'Error'){
+	log('ERROR : Impossible to read the file of the user.')
+}
+
 // Variable to connect the bot to the myGes user account
 const userId = file.userId;
 // const username = file.username

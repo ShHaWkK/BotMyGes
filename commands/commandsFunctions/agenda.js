@@ -17,7 +17,7 @@ export async function personalAgenda(interaction, client){
         await interaction.reply('Error, you need to be registered..')
         return
     }
-    await interaction.reply('Sending a private message, please wait...');
+    await interaction.reply('Sending a private message, can take more than a minute, please wait...');
 
     let errorChannel = await client.channels.cache.get(config.errorChannel)
     let userMessageChannel = await client.users.fetch(file.userId)

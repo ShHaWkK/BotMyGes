@@ -21,79 +21,85 @@ export async function retrieveMyGesData(client){
 
 			const file = await gFunct.readJsonFile('./users/infos/'+listJsonFile[k])
 
-			// Variable to connect the bot to the myGes user account
-			const userId = file.userId;
-			const username = file.username
-			const login = file.login;
-			const password = file.password;		
+			if (file != 'Error'){
 
-			// Login the user using userFunct.js
-			const user = await userFunct.login(login, password)
+				// Variable to connect the bot to the myGes user account
+				const userId = file.userId;
+				const username = file.username
+				const login = file.login;
+				const password = file.password;		
 
-			if (user != 'Error'){
-				try{
+				// Login the user using userFunct.js
+				const user = await userFunct.login(login, password)
 
-					// Create the current date
-					var today = new Date();
-					let monday = new Date(gFunct.getWeekMonday())
-					let saturday = new Date(gFunct.getWeekSaturday())
+				if (user != 'Error'){
+					try{
 
-					// If I set 0 to hours, saturday it set to saturday 22h :/
-					saturday.setUTCHours(0, 0, 0, 0);
+						// Create the current date
+						var today = new Date();
+						let monday = new Date(gFunct.getWeekMonday())
+						let saturday = new Date(gFunct.getWeekSaturday())
 
-					// Compare date to request the weekly scheldule or the next weekly schedule
-					// console.log(today, saturday)
-					if (today >= saturday){
-						log(`It's the weekend today, requesting next week schedule (print it, if it's sunday)`)
+						// If I set 0 to hours, saturday it set to saturday 22h :/
+						saturday.setUTCHours(0, 0, 0, 0);
 
-						monday.setUTCHours(0,0,0,0)
-						monday.setDate(monday.getDate() + 7);
-						monday.setUTCHours(0,0,0,0)
-			
-						// console.log(saturday)
-						saturday.setDate(saturday.getDate() + 7);
+						// Compare date to request the weekly scheldule or the next weekly schedule
+						// console.log(today, saturday)
+						if (today >= saturday){
+							log(`It's the weekend today, requesting next week schedule (print it, if it's sunday)`)
+
+							monday.setUTCHours(0,0,0,0)
+							monday.setDate(monday.getDate() + 7);
+							monday.setUTCHours(0,0,0,0)
 				
+							// console.log(saturday)
+							saturday.setDate(saturday.getDate() + 7);
+					
+						}
+						// console.log(monday, saturday)
+						// Request the agenda
+						const agenda = await userFunct.Agenda(user, monday, saturday)
+
+						// Write in [groupClasseName]_agenda.json and print agenda on discord if changed...
+						await userFunct.printAgenda(client, agenda, file, user)
 					}
-					// console.log(monday, saturday)
-					// Request the agenda
-					const agenda = await userFunct.Agenda(user, monday, saturday)
+					catch{
+						log(`Error when trying to fetch the schedule for ${login}`)
+						errorChannel.send(`Error when trying to fetch the schedule for ${login}`)
+					}
 
-					// Write in [groupClasseName]_agenda.json and print agenda on discord if changed...
-					await userFunct.printAgenda(client, agenda, file, user)
-				}
-				catch{
-					log(`Error when trying to fetch the schedule for ${login}`)
-					errorChannel.send(`Error when trying to fetch the schedule for ${login}`)
-				}
+					// try{
+						// Retrieve grades
+						const grades = await userFunct.Grades(user, username, today)
+						// Print grades
+						await userFunct.printGrades(client, grades, file)
+					// }
+					// catch (error){
+					// 	log(`Error when trying to retrieve grades for ${login}, ${error}`)
+					// 	errorChannel.send(`Error when trying to retrieve grades for ${login}`)
+					// }				
 
-				// try{
-					// Retrieve grades
-					const grades = await userFunct.Grades(user, username, today)
-					// Print grades
-					await userFunct.printGrades(client, grades, file)
-				// }
-				// catch (error){
-				// 	log(`Error when trying to retrieve grades for ${login}, ${error}`)
-				// 	errorChannel.send(`Error when trying to retrieve grades for ${login}`)
-				// }				
+					try{
+						// Retrieve absences
+						const absences = await userFunct.Absences(user, username, today)
+						// Print absences
+						await userFunct.printAbsences(client, absences, file)
+					}
+					catch (error){
+						log(`Error when trying to retrieve new absences for ${login}, ${error}`)
+						errorChannel.send(`Error when trying to retrieve new absence for ${login}`)
+					}
 
-				try{
-					// Retrieve absences
-					const absences = await userFunct.Absences(user, username, today)
-					// Print absences
-					await userFunct.printAbsences(client, absences, file)
 				}
-				catch (error){
-					log(`Error when trying to retrieve new absences for ${login}, ${error}`)
-					errorChannel.send(`Error when trying to retrieve new absence for ${login}`)
+				else{
+					log(`Error when trying to connect to ${login} myges account`)
+					errorChannel.send(`Error when trying to connect to ${login} myges account`)
+					// let targetUser = await client.users.fetch(userId);
+					// targetUser.send('Error when trying to fetch your schedule');
 				}
-
 			}
 			else{
-				log(`Error when trying to connect to ${login} myges account`)
-				errorChannel.send(`Error when trying to connect to ${login} myges account`)
-				// let targetUser = await client.users.fetch(userId);
-				// targetUser.send('Error when trying to fetch your schedule');
+				log(`ERROR : Impossible to read the file : ./users/infos/+${listJsonFile[k]}`)
 			}
 
 		}

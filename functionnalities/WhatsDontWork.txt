@@ -1,4 +1,4 @@
 What's don't work with the bot ?
 
 - If myges move all lessons from one day to another day, the number of days won't change, the bot detect it, but don't send any message cause uh
-- If you see some random number instead of roles, just allow anyone to mention that rôle
+- If you see some random number instead of roles, just allow anyone to mention that role in Discord.
